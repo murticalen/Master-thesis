@@ -1,0 +1,13 @@
+#Java binaries and IntelliJ files
+*/bin/*
+*bin/*
+*/out/*
+*idea*
+!*/out/output/*
+
+#local VM files
+*.vagrant/*
+ubuntu-xenial*cloudimg-console.log
+
+#dataset
+*dataset/*
