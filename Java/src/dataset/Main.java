@@ -8,8 +8,8 @@ import java.util.Set;
 
 public class Main {
 
-    private static final String MULTICOM_LANDLINE_INPUT = "";
-    private static final String OUTPUT_FILE = "";
+    private static final String MULTICOM_LANDLINE_INPUT = "./../dataset/";
+    private static final String OUTPUT_FILE = "./../dataset/combined.csv";
 
     public static void main(String[] args) throws Exception {
 
