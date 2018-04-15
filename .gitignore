@@ -4,6 +4,7 @@
 */out/*
 *idea*
 !*/out/output/*
+*Java.iml
 
 #local VM files
 *.vagrant/*
@@ -11,3 +12,7 @@ ubuntu-xenial*cloudimg-console.log
 
 #dataset
 *dataset/*
+
+#R project files
+*.Rproj.user
+*.Rhistory
