@@ -18,6 +18,7 @@ public class MulticomLandlineDatasetPreprocessor implements DatasetPreprocessor 
 
         var writer = new BufferedWriter(new FileWriter(outputFile));
         writer.write(CallRecord.HEADER);
+        writer.write(System.lineSeparator());
         writer.flush();
 
         for (int i = 1; i <= 5; i++) {
@@ -27,6 +28,7 @@ public class MulticomLandlineDatasetPreprocessor implements DatasetPreprocessor 
             System.out.println(i);
             while ((line = reader.readLine()) != null) {
                 writer.write(parseLine(line).toString());
+                writer.write(System.lineSeparator());
                 writer.flush();
             }
         }
@@ -43,9 +45,9 @@ public class MulticomLandlineDatasetPreprocessor implements DatasetPreprocessor 
         var timestamp = call[4];
         var duration = call[13];
         var location = call[16];
-        var originCarrier = call[14];
-        var terminatingCarrier = call[15];
-        return new CallRecord(id, caller, receiver, location, duration, timestamp, originCarrier, terminatingCarrier);
+        //var originCarrier = call[14];
+        //var terminatingCarrier = call[15];
+        return new CallRecord(id, caller, receiver, location, duration, timestamp);//, originCarrier, terminatingCarrier);
     }
 
     /*

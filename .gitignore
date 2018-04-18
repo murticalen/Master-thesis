@@ -16,3 +16,4 @@ ubuntu-xenial*cloudimg-console.log
 #R project files
 *.Rproj.user
 *.Rhistory
+.Rproj.user
