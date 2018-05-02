@@ -10,7 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * NOTE: the output file count needs to be smaller than the max available open files for a program (my Mac has 120 limit)
+ * NOTE: the output file count needs to be smaller than the max available open files for a program (my Mac has 120 limit).
+ * There is no explicit regulating of the max count, but maxCallsPerFile parameter should handle it easily.
  */
 public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
@@ -35,22 +36,22 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
         System.out.println(2);
 
 
-        Map<Integer, Writer> filesFound = new HashMap<>();
+        Map<Integer, Writer> fileWriterMap = new HashMap<>();
         this.readInputAndDoStuff(inputPath, line -> {
             CallRecord record = CallRecord.read(line);
             int file = userOutputFileMap.get(record.getCallerId());
             Writer writer;
-            if (!filesFound.containsKey(file)) {
+            if (!fileWriterMap.containsKey(file)) {
                 writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
-                filesFound.put(file, writer);
+                fileWriterMap.put(file, writer);
                 writeln(writer, CallRecord.HEADER + CallRecord.SEP + CallIntervals.INTERVAL_HEADER);
             } else {
-                writer = filesFound.get(file);
+                writer = fileWriterMap.get(file);
             }
             writeln(writer, record.toString() + CallRecord.SEP + CallIntervals.extractIntervals(record));
         });
 
-        for (Writer writer : filesFound.values()) {
+        for (Writer writer : fileWriterMap.values()) {
             writer.flush();
             writer.close();
         }
