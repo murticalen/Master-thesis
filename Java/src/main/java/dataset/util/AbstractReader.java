@@ -9,8 +9,6 @@ public abstract class AbstractReader {
         //skip header
         String line = reader.readLine();
         while ((line = reader.readLine()) != null) {
-            CallRecord record = CallRecord.read(line);
-            String callerId = record.getCallerId();
             processor.processLine(line);
         }
         reader.close();
@@ -18,12 +16,11 @@ public abstract class AbstractReader {
 
     protected void writeln(Writer writer, String line) throws IOException
     {
-        writer.write(line);
-        writer.write(System.lineSeparator());
+        writer.write(line + System.lineSeparator());
     }
 
-    protected static abstract class LineProcessor{
-        public abstract void processLine(String line) throws Exception;
+    protected interface LineProcessor{
+        void processLine(String line) throws Exception;
     }
 
 }

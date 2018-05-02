@@ -17,12 +17,9 @@ public class NetworkExtractor extends AbstractReader {
 
     public Map<CallSocialInfo, Integer> getSocialNetworkInfo(String inputPath) throws Exception{
         Map<CallSocialInfo, Integer> socialInfoCountMap = new HashMap<>(expectedCallsCount);
-        this.readInputAndDoStuff(inputPath, new LineProcessor() {
-            @Override
-            public void processLine(String line) {
-                CallSocialInfo info = CallRecord.extractSocialInfo(line);
-                socialInfoCountMap.put(info, socialInfoCountMap.getOrDefault(info, 0) + 1);
-            }
+        this.readInputAndDoStuff(inputPath, line -> {
+            CallSocialInfo info = CallRecord.extractSocialInfo(line);
+            socialInfoCountMap.put(info, socialInfoCountMap.getOrDefault(info, 0) + 1);
         });
         return socialInfoCountMap;
     }

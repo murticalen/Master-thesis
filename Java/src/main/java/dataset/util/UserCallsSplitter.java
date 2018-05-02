@@ -22,12 +22,9 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
     @Override
     public void preProcessDataset(String inputPath, String outputFile) throws Exception {
-        this.readInputAndDoStuff(inputPath, new LineProcessor() {
-            @Override
-            public void processLine(String line) {
-                String caller = CallRecord.extractCallerId(line);
-                userCallCount.put(caller, userCallCount.getOrDefault(caller, 0) + 1);
-            }
+        this.readInputAndDoStuff(inputPath, line -> {
+            String caller = CallRecord.extractCallerId(line);
+            userCallCount.put(caller, userCallCount.getOrDefault(caller, 0) + 1);
         });
         System.out.println(1);
         determineUserFiles();
@@ -35,21 +32,18 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
 
         Map<Integer, Writer> filesFound = new HashMap<>();
-        this.readInputAndDoStuff(inputPath, new LineProcessor() {
-            @Override
-            public void processLine(String line) throws Exception{
-                CallRecord record = CallRecord.read(line);
-                int file = userOutputFileMap.get(record.getCallerId());
-                Writer writer;
-                if (!filesFound.containsKey(file)) {
-                    writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
-                    filesFound.put(file, writer);
-                    writeln(writer, CallRecord.HEADER+CallRecord.SEP+CallIntervals.INTERVAL_HEADER);
-                } else {
-                    writer = filesFound.get(file);
-                }
-                writeln(writer, record.toString()+CallRecord.SEP+CallIntervals.extractIntervals(record));
+        this.readInputAndDoStuff(inputPath, line -> {
+            CallRecord record = CallRecord.read(line);
+            int file = userOutputFileMap.get(record.getCallerId());
+            Writer writer;
+            if (!filesFound.containsKey(file)) {
+                writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
+                filesFound.put(file, writer);
+                writeln(writer, CallRecord.HEADER+CallRecord.SEP+CallIntervals.INTERVAL_HEADER);
+            } else {
+                writer = filesFound.get(file);
             }
+            writeln(writer, record.toString()+CallRecord.SEP+CallIntervals.extractIntervals(record));
         });
 
         for (Writer writer : filesFound.values()) {
