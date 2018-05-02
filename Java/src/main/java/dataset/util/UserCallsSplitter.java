@@ -1,5 +1,7 @@
 package main.java.dataset.util;
 
+import main.java.dataset.intervals.CallIntervals;
+
 import java.io.*;
 import java.util.*;
 
@@ -42,11 +44,11 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
                 if (!filesFound.containsKey(file)) {
                     writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
                     filesFound.put(file, writer);
-                    writeln(writer, CallRecord.HEADER);
+                    writeln(writer, CallRecord.HEADER+CallRecord.SEP+CallIntervals.INTERVAL_HEADER);
                 } else {
                     writer = filesFound.get(file);
                 }
-                writeln(writer, record.toString());
+                writeln(writer, record.toString()+CallRecord.SEP+CallIntervals.extractIntervals(record));
             }
         });
 
