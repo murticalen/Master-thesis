@@ -4,7 +4,7 @@ import java.io.*;
 
 public abstract class AbstractReader {
 
-    protected void readInputAndDoStuff(String inputPath, LineProcessor processor) throws Exception{
+    protected void readInputAndDoStuff(String inputPath, LineProcessor processor) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inputPath))));
         //skip header
         String line = reader.readLine();
@@ -14,12 +14,11 @@ public abstract class AbstractReader {
         reader.close();
     }
 
-    protected void writeln(Writer writer, String line) throws IOException
-    {
+    protected void writeln(Writer writer, String line) throws IOException {
         writer.write(line + System.lineSeparator());
     }
 
-    protected interface LineProcessor{
+    protected interface LineProcessor {
         void processLine(String line) throws Exception;
     }
 

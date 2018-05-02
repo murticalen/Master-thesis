@@ -1,7 +1,6 @@
 package main.java.dataset.util;
 
 import main.java.social_network.CallSocialInfo;
-import main.java.social_network.NetworkExtractor;
 
 import java.util.Objects;
 
@@ -71,12 +70,11 @@ public class CallRecord {
         return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
     }
 
-    public static String extractCallerId(String line)
-    {
+    public static String extractCallerId(String line) {
         return line.split(";")[1];
     }
 
-    public static CallSocialInfo extractSocialInfo(String line){
+    public static CallSocialInfo extractSocialInfo(String line) {
         String[] call = line.split(";");
         return new CallSocialInfo(Long.parseLong(call[1]), Long.parseLong(call[2]));
     }

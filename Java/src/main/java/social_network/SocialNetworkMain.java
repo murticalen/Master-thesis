@@ -2,13 +2,11 @@ package main.java.social_network;
 
 import main.java.dataset.DatasetMain;
 
-import java.util.Map;
-
 public class SocialNetworkMain {
 
     public static final int CALLS_COUNT = DatasetMain.TOTAL_SIZE;
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
         NetworkExtractor networkExtractor = new NetworkExtractor(CALLS_COUNT);
         var networkInfo = networkExtractor.getSocialNetworkInfo(DatasetMain.OUTPUT_FILE);

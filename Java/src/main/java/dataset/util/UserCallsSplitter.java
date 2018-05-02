@@ -2,8 +2,12 @@ package main.java.dataset.util;
 
 import main.java.dataset.intervals.CallIntervals;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * NOTE: the output file count needs to be smaller than the max available open files for a program (my Mac has 120 limit)
@@ -39,11 +43,11 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
             if (!filesFound.containsKey(file)) {
                 writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
                 filesFound.put(file, writer);
-                writeln(writer, CallRecord.HEADER+CallRecord.SEP+CallIntervals.INTERVAL_HEADER);
+                writeln(writer, CallRecord.HEADER + CallRecord.SEP + CallIntervals.INTERVAL_HEADER);
             } else {
                 writer = filesFound.get(file);
             }
-            writeln(writer, record.toString()+CallRecord.SEP+CallIntervals.extractIntervals(record));
+            writeln(writer, record.toString() + CallRecord.SEP + CallIntervals.extractIntervals(record));
         });
 
         for (Writer writer : filesFound.values()) {
@@ -54,7 +58,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
     private void determineUserFiles() {
         int i = 0;
-        int actualMaxCalls = (int)(1.3 * maxCallsPerFile);
+        int actualMaxCalls = (int) (1.3 * maxCallsPerFile);
         Map<Integer, Integer> availableFiles = new HashMap<>();
         for (var userCount : userCallCount.entrySet()) {
             if (availableFiles.isEmpty()) {

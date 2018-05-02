@@ -36,6 +36,6 @@ public class CallSocialInfo {
 
     @Override
     public String toString() {
-        return callerId+"->"+receiverId;
+        return callerId + "->" + receiverId;
     }
 }
