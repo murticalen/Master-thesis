@@ -1,25 +1,21 @@
-package dataset.util;
+package main.java.dataset.util;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
+import java.text.SimpleDateFormat;
 
-public class MulticomLandlineDatasetPreprocessor implements DatasetPreprocessor {
+public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreprocessor {
 
-    //private Calendar calendar;
-
-    public MulticomLandlineDatasetPreprocessor(){
-        //this.calendar = Calendar.getInstance(Locale.forLanguageTag("hr_HR"));
+    public MulticomLandlineDatasetPreprocessor() {
+        super();
+        this.inputDateFormatter = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
+        this.weekdayFormatter = new SimpleDateFormat("EE");
     }
 
     @Override
     public void preProcessDataset(String inputPath, String outputFile) throws Exception {
 
         var writer = new BufferedWriter(new FileWriter(outputFile));
-        writer.write(CallRecord.HEADER);
-        writer.write(System.lineSeparator());
-        writer.flush();
+        writeln(writer, CallRecord.HEADER);
 
         for (int i = 1; i <= 5; i++) {
             var reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inputPath + "/pozivi0" + i + ".dsv"))));
@@ -27,27 +23,24 @@ public class MulticomLandlineDatasetPreprocessor implements DatasetPreprocessor 
             String line = reader.readLine();
             System.out.println(i);
             while ((line = reader.readLine()) != null) {
-                writer.write(parseLine(line).toString());
-                writer.write(System.lineSeparator());
-                writer.flush();
+                CallRecord record = parseLine(line);
+                writeln(writer, record.toString());
             }
+            reader.close();
         }
-
+        writer.flush();
         writer.close();
-
     }
 
     private CallRecord parseLine(String line) {
         String[] call = line.split(";");
-        var id = call[1];
-        var caller = call[11];
-        var receiver = call[12];
-        var timestamp = call[4];
-        var duration = call[13];
-        var location = call[16];
-        //var originCarrier = call[14];
-        //var terminatingCarrier = call[15];
-        return new CallRecord(id, caller, receiver, location, duration, timestamp);//, originCarrier, terminatingCarrier);
+        String id = call[1];
+        String caller = sanitize(call[11]);
+        String receiver = sanitize(call[12]);
+        String timestamp = call[4];
+        int duration = Integer.parseInt(call[13]);
+        int weekDay = calculateWeekday(timestamp);
+        return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
     }
 
     /*
