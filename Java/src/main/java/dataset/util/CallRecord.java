@@ -7,13 +7,16 @@ public class CallRecord {
     private String id;
     private String callerId;
     private String receiverId;
-    private String duration;
+    private int duration;
+    /**
+     * IMPLIED TIMESTAMP FORMAT: dd.MM.yy hh:mm:ss
+     */
     private String callTime;
     private int weekDay;
     public static final String SEP = ";";
     public static final String HEADER = "id" + SEP + "callerId" + SEP + "receiverId" + SEP + "duration" + SEP + "callTime" + SEP + "weekDay";
 
-    public CallRecord(String id, String callerId, String receiverId, String duration, String callTime, int weekDay) {
+    public CallRecord(String id, String callerId, String receiverId, int duration, String callTime, int weekDay) {
         this.id = id;
         this.callerId = callerId;
         this.receiverId = receiverId;
@@ -34,8 +37,12 @@ public class CallRecord {
         return receiverId;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
+    }
+
+    public void setCallTime(String callTime) {
+        this.callTime = callTime;
     }
 
     public String getCallTime() {
@@ -55,10 +62,15 @@ public class CallRecord {
         String id = call[0];
         String caller = call[1];
         String receiver = call[2];
-        String duration = call[3];
+        int duration = Integer.parseInt(call[3]);
         String timestamp = call[4];
         int weekDay = Integer.parseInt(call[5]);
         return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
+    }
+
+    public static String extractCallerId(String line)
+    {
+        return line.split(";")[1];
     }
 
     @Override

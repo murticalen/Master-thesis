@@ -5,5 +5,7 @@
 #update.packages()
 #old.packages()
 
+rm(list = ls())
+
 library(tidyverse)
 library(lubridate)

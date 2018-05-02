@@ -1,6 +1,9 @@
 #read data
 print(Sys.time())
-callsData <- read.csv2(file = './../dataset/combined.csv', stringsAsFactors = F, nrow = 10000)
+callsData <- read.csv2(file = './../dataset/user_splitted/0.csv', stringsAsFactors = F)
+
+callsData %>% group_by(callerId) %>% summarise(cnt = n()) %>% arrange(desc(cnt))
+
 print(Sys.time())
 
 #cast char time to date

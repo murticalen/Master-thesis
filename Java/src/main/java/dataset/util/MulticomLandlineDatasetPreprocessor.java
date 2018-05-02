@@ -1,7 +1,5 @@
 package main.java.dataset.util;
 
-import main.java.dataset.intervals.CallIntervals;
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 
@@ -17,9 +15,7 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
     public void preProcessDataset(String inputPath, String outputFile) throws Exception {
 
         var writer = new BufferedWriter(new FileWriter(outputFile));
-        writer.write(CallRecord.HEADER);
-        writer.write(System.lineSeparator());
-        writer.flush();
+        writeln(writer, CallRecord.HEADER);
 
         for (int i = 1; i <= 5; i++) {
             var reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inputPath + "/pozivi0" + i + ".dsv"))));
@@ -28,13 +24,11 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
             System.out.println(i);
             while ((line = reader.readLine()) != null) {
                 CallRecord record = parseLine(line);
-                writer.write(record.toString());
-                writer.write(System.lineSeparator());
-                writer.flush();
+                writeln(writer, record.toString());
             }
             reader.close();
         }
-
+        writer.flush();
         writer.close();
     }
 
@@ -44,8 +38,7 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
         String caller = sanitize(call[11]);
         String receiver = sanitize(call[12]);
         String timestamp = call[4];
-        String duration = call[13];
-        Integer.parseInt(duration);
+        int duration = Integer.parseInt(call[13]);
         int weekDay = calculateWeekday(timestamp);
         return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
     }
