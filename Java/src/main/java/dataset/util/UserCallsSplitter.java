@@ -36,8 +36,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
         Map<Integer, Writer> fileWriterMap = new HashMap<>();
         this.readInputAndDoStuff(inputPath, line -> {
-            CallRecord record = CallRecord.read(line);
-            int file = userOutputFileMap.get(record.getCallerId());
+            int file = userOutputFileMap.get(CallRecord.extractCallerId(line));
             Writer writer;
             if (!fileWriterMap.containsKey(file)) {
                 writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
@@ -46,7 +45,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
             } else {
                 writer = fileWriterMap.get(file);
             }
-            writeln(writer, record.toString());
+            writeln(writer, line);
         });
 
         for (Writer writer : fileWriterMap.values()) {

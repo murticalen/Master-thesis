@@ -12,3 +12,6 @@ callsData$callTime <- dmy_hms(callsData$callTime)
 callsDataSample <- sample_n(callsData, 100000, r = T)
 
 callsDataSample
+
+userProfiles <- read.csv2(file = './../dataset/user_profiles.csv', stringsAsFactors = F)
+str(userProfiles)

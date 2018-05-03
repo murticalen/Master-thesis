@@ -1,6 +1,7 @@
 package main.java.dataset;
 
 import main.java.dataset.intervals.CallIntervals;
+import main.java.dataset.intervals.UserIntervalExtractor;
 import main.java.dataset.util.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public class DatasetMain {
 
     private static final String MULTICOM_LANDLINE_INPUT = "./../dataset/";
     public static final String OUTPUT_FILE = "./../dataset/combined.csv";
+    public static final String USER_PROFILE_FILE = "./../dataset/user_profiles.csv";
     public static final String USER_SPLITTED_OUTPUT = "./../dataset/user_splitted/";
     //sample 100k calls out of 24 mil.
     private static final int SAMPLE_SIZE = 100000;
@@ -29,9 +31,10 @@ public class DatasetMain {
         preprocessor = new UserCallsSplitter(MAX_CALLS_PER_FILE);
         //preprocessor.preProcessDataset(OUTPUT_FILE, USER_SPLITTED_OUTPUT);
 
-        Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
-        List<CallRecord> samples = sampler.getAllRecords(OUTPUT_FILE);
+        UserIntervalExtractor extractor = new UserIntervalExtractor();
+        extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
 
-        System.out.println(samples.size());
+        Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
+        //List<CallRecord> samples = sampler.getAllRecords(OUTPUT_FILE);
     }
 }

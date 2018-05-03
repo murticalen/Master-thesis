@@ -26,14 +26,7 @@ public class SocialNetworkMain {
         });
         double all = 0.0;
         for (CallRecord record : records) {
-            double total = 0;
-            for (var map : IntervalHelper.extractIntervals(record).entrySet()){
-                for (var entry : map.getValue().entrySet()) {
-                    total += entry.getValue();
-                }
-            };
-            all += total;
-            System.out.println(total);
+            System.out.println(record.toString()+CallIntervals.SEP+CallIntervals.getIntervalsString(record));
         }
         System.out.println(all);
         System.out.println(records.size());

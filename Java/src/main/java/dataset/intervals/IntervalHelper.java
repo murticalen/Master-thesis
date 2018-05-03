@@ -10,7 +10,7 @@ public final class IntervalHelper {
 
     private static final Calendar calendar = Calendar.getInstance();
 
-    public static Map<Integer, Map<String, Double>> extractIntervals(CallRecord record) throws ParseException {
+    public static Map<Integer, Map<String, Double>> extractIntervals(CallRecord record) {
         Map<Integer, Map<String, Double>> result = new HashMap<>();
         double timePoint = IntervalHelper.calculateTimePoint(record.getCallTime());
         int currentDay = record.getWeekDay();
@@ -54,8 +54,12 @@ public final class IntervalHelper {
         return hours + minutes / 60 + seconds / 3600;
     }
 
-    public static double calculateTimePoint(String timestamp) throws ParseException {
-        return calculateTimePoint(CallRecord.TIMESTAMP_FORMATTER.parse(timestamp));
+    public static double calculateTimePoint(String timestamp) {
+        try {
+            return calculateTimePoint(CallRecord.TIMESTAMP_FORMATTER.parse(timestamp));
+        } catch (ParseException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     // return pdf(x) = standard Gaussian pdf
