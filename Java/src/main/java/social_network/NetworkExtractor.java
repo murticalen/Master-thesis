@@ -6,7 +6,6 @@ import main.java.dataset.util.CallRecord;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NetworkExtractor extends AbstractReader {

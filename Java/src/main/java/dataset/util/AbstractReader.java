@@ -21,7 +21,7 @@ public abstract class AbstractReader {
         writer.write(line + System.lineSeparator());
     }
 
-    protected void flushAndClose(Writer writer) throws IOException{
+    protected void flushAndClose(Writer writer) throws IOException {
         writer.flush();
         writer.close();
     }
@@ -38,7 +38,7 @@ public abstract class AbstractReader {
         List<CallRecord> recordList = new ArrayList<>();
         readInputAndDoStuff(inputPath, line -> {
             CallRecord record = CallRecord.read(line);
-            if (filter.test(record)){
+            if (filter.test(record)) {
                 recordList.add(CallRecord.read(line));
             }
         });

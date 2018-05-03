@@ -17,7 +17,7 @@ public class DatasetMain {
     private static final int MAX_CALLS_PER_FILE = 1000000;
 
     public static void main(String[] args) throws Exception {
-        CallIntervals.initializeHeader();
+        CallIntervals.initialize();
 
 
         //NOTE: this is actually a fake map-reduce done on a single computer without the Hadoop framework
