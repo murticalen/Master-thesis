@@ -28,4 +28,13 @@ public abstract class AbstractDatasetPreprocessor extends AbstractReader {
             return 0;
         }
     }
+
+    protected String getTimestamp(String date) {
+        try {
+            return CallRecord.TIMESTAMP_FORMATTER.format(this.inputDateFormatter.parse(date));
+        } catch (ParseException exception) {
+            System.err.println("Wrong input format " + date);
+            return date;
+        }
+    }
 }

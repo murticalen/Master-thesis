@@ -16,8 +16,8 @@ import java.util.Map;
 public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
     private int maxCallsPerFile;
-    private Map<String, Integer> userCallCount;
-    private Map<String, Integer> userOutputFileMap;
+    private Map<Integer, Integer> userCallCount;
+    private Map<Integer, Integer> userOutputFileMap;
 
     public UserCallsSplitter(int maxCallsPerFile) {
         this.maxCallsPerFile = maxCallsPerFile;
@@ -28,7 +28,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
     @Override
     public void preProcessDataset(String inputPath, String outputFile) throws Exception {
         this.readInputAndDoStuff(inputPath, line -> {
-            String caller = CallRecord.extractCallerId(line);
+            int caller = CallRecord.extractCallerId(line);
             userCallCount.put(caller, userCallCount.getOrDefault(caller, 0) + 1);
         });
         System.out.println(1);
@@ -44,16 +44,15 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
             if (!fileWriterMap.containsKey(file)) {
                 writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
                 fileWriterMap.put(file, writer);
-                writeln(writer, CallRecord.HEADER + CallRecord.SEP + CallIntervals.INTERVAL_HEADER);
+                writeln(writer, CallRecord.HEADER);
             } else {
                 writer = fileWriterMap.get(file);
             }
-            writeln(writer, record.toString() + CallRecord.SEP + CallIntervals.extractIntervals(record));
+            writeln(writer, record.toString());
         });
 
         for (Writer writer : fileWriterMap.values()) {
-            writer.flush();
-            writer.close();
+            flushAndClose(writer);
         }
     }
 

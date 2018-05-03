@@ -1,14 +1,21 @@
 package main.java.dataset.util;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreprocessor {
+
+    private Map<String, Integer> idRemap;
+    private int currentId = 0;
 
     public MulticomLandlineDatasetPreprocessor() {
         super();
         this.inputDateFormatter = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
         this.weekdayFormatter = new SimpleDateFormat("EE");
+        idRemap = new HashMap<>();
     }
 
     @Override
@@ -17,30 +24,35 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
         var writer = new BufferedWriter(new FileWriter(outputFile));
         writeln(writer, CallRecord.HEADER);
 
+        //merge 5 files into 1 large file
         for (int i = 1; i <= 5; i++) {
-            var reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inputPath + "/pozivi0" + i + ".dsv"))));
-            //skip header
-            String line = reader.readLine();
             System.out.println(i);
-            while ((line = reader.readLine()) != null) {
+            this.readInputAndDoStuff(inputPath + "/pozivi0" + i + ".dsv", line -> {
                 CallRecord record = parseLine(line);
                 writeln(writer, record.toString());
-            }
-            reader.close();
+            });
         }
-        writer.flush();
-        writer.close();
+        flushAndClose(writer);
     }
 
     private CallRecord parseLine(String line) {
         String[] call = line.split(";");
         String id = call[1];
-        String caller = sanitize(call[11]);
-        String receiver = sanitize(call[12]);
+        //String caller = (sanitize(call[11]));
+        int callerId = getId(sanitize(call[11]));
+        //String receiver = (sanitize(call[12]));
+        int receiverId = getId(sanitize(call[12]));
         String timestamp = call[4];
         int duration = Integer.parseInt(call[13]);
         int weekDay = calculateWeekday(timestamp);
-        return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
+        return new CallRecord(id, callerId, receiverId, duration, getTimestamp(timestamp), weekDay);
+    }
+
+    private int getId(String number) {
+        if (!idRemap.containsKey(number)) {
+            idRemap.put(number, ++currentId);
+        }
+        return idRemap.get(number);
     }
 
     /*

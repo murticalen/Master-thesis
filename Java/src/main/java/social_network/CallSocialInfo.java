@@ -3,19 +3,31 @@ package main.java.social_network;
 import java.util.Objects;
 
 public class CallSocialInfo {
-    private long callerId;
-    private long receiverId;
 
-    public CallSocialInfo(long callerId, long receiverId) {
-        this.callerId = callerId;
-        this.receiverId = receiverId;
+    public static boolean DIRECTED = true;
+    private int callerId;
+    private int receiverId;
+
+    public CallSocialInfo(int callerId, int receiverId) {
+        if (DIRECTED) {
+            this.callerId = callerId;
+            this.receiverId = receiverId;
+        } else {
+            if (callerId < receiverId) {
+                this.callerId = callerId;
+                this.receiverId = receiverId;
+            } else {
+                this.callerId = receiverId;
+                this.receiverId = callerId;
+            }
+        }
     }
 
-    public long getCallerId() {
+    public int getCallerId() {
         return callerId;
     }
 
-    public long getReceiverId() {
+    public int getReceiverId() {
         return receiverId;
     }
 

@@ -24,14 +24,12 @@ public class DatasetMain {
         //next two pre-processors do the mapping and the latter one reducing
         //if one is to migrate this to a real map reduce, all it needs to do is parse lines to CallRecord and emit(callerId, record)
         AbstractDatasetPreprocessor preprocessor = new MulticomLandlineDatasetPreprocessor();
-        //preprocessor.preProcessDataset(MULTICOM_LANDLINE_INPUT, OUTPUT_FILE);
+        preprocessor.preProcessDataset(MULTICOM_LANDLINE_INPUT, OUTPUT_FILE);
 
         preprocessor = new UserCallsSplitter(MAX_CALLS_PER_FILE);
-        //preprocessor.preProcessDataset(OUTPUT_FILE, USER_SPLITTED_OUTPUT);
+        preprocessor.preProcessDataset(OUTPUT_FILE, USER_SPLITTED_OUTPUT);
 
-        Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
-        List<CallRecord> samples = sampler.readDataset(OUTPUT_FILE);
-
-        System.out.println(samples.isEmpty());
+//        Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
+//        List<CallRecord> samples = sampler.readDataset(OUTPUT_FILE);
     }
 }
