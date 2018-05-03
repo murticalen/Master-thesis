@@ -1,7 +1,5 @@
 package main.java.dataset.util;
 
-import main.java.dataset.intervals.CallIntervals;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.Writer;
