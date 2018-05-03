@@ -1,11 +1,10 @@
 package main.java.dataset.util;
 
-import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Map;
 
-public abstract class AbstractDatasetPreprocessor extends AbstractReader{
+public abstract class AbstractDatasetPreprocessor extends AbstractReader {
 
     protected DateFormat inputDateFormatter;
     protected DateFormat weekdayFormatter;
@@ -27,6 +26,15 @@ public abstract class AbstractDatasetPreprocessor extends AbstractReader{
         } catch (ParseException exception) {
             System.err.println("Wrong input format " + date);
             return 0;
+        }
+    }
+
+    protected String getTimestamp(String date) {
+        try {
+            return CallRecord.TIMESTAMP_FORMATTER.format(this.inputDateFormatter.parse(date));
+        } catch (ParseException exception) {
+            System.err.println("Wrong input format " + date);
+            return date;
         }
     }
 }
