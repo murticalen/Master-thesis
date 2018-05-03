@@ -16,19 +16,21 @@ public class CallIntervals {
     public static Map<Tuple<Double>, String> timeIntervalMap;
     private static Map<String, Double> emptyMap = new HashMap<>();
 
-    private CallIntervals() {
-
-    }
-
-    public static String getIntervalsString(CallRecord record) throws ParseException {
+    public static String getIntervalsString(Map<Integer, Map<String, Double>> intervals) {
         StringBuilder sb = new StringBuilder();
-        Map<Integer, Map<String, Double>> intervals = IntervalHelper.extractIntervals(record);
         for (int i = 0; i < DAYS.length; i++) {
             int day = DAYS[i];
             Map<String, Double> dayIntervalMap = intervals.getOrDefault(day, emptyMap);
 
             for (int j = 0; j < INTERVALS.length; j++) {
-                sb.append(dayIntervalMap.getOrDefault(INTERVALS[j], 0.0));
+                String value = "0.0";
+                if (dayIntervalMap.containsKey(INTERVALS[j])) {
+                    double prob = dayIntervalMap.get(INTERVALS[j]);
+                    if (prob > 1e-9) {
+                        value = String.format("%.9f", prob);
+                    }
+                }
+                sb.append(value);
                 if (i != DAYS.length - 1 || j != INTERVALS.length - 1) {
                     sb.append(SEP);
                 }
@@ -36,6 +38,12 @@ public class CallIntervals {
         }
         return sb.toString();
     }
+
+    public static String getIntervalsString(CallRecord record) throws ParseException {
+        return getIntervalsString(IntervalHelper.extractIntervals(record));
+    }
+
+
 
     public static void initialize() {
         initializeHeader();
