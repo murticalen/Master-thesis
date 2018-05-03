@@ -1,13 +1,11 @@
 package main.java.dataset.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import jdk.jshell.spi.ExecutionControl;
 
-public class Sampler {
+import java.util.List;
+import java.util.function.Predicate;
+
+public class Sampler extends AbstractReader {
 
     private final double sampleOdds;
     private final int sampleSize;
@@ -19,24 +17,13 @@ public class Sampler {
         this.sampleOdds = sampleSize * 1.0 / totalSize;
     }
 
-    public List<CallRecord> readDataset(String inputPath) throws Exception {
-        List<CallRecord> records = new ArrayList<>(sampleSize);
-        var reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inputPath))));
-        //ignore header
-        String line = reader.readLine();
-
-        while ((line = reader.readLine()) != null) {
-            if (isIncluded()) {
-                records.add(CallRecord.read(line));
-            }
-
-        }
-        reader.close();
-
-        return records;
+    @Override
+    public List<CallRecord> getAllRecords(String inputPath) throws Exception {
+        return super.getAllRecords(inputPath, record -> Math.random() < sampleOdds);
     }
 
-    protected boolean isIncluded() {
-        return Math.random() < sampleOdds;
+    @Override
+    public List<CallRecord> getAllRecords(String inputPath, Predicate<CallRecord> filter) throws Exception {
+        return super.getAllRecords(inputPath, record -> Math.random() < sampleOdds && filter.test(record));
     }
 }
