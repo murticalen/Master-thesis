@@ -52,7 +52,8 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
 
     private int getId(String number) {
         if (!idRemap.containsKey(number)) {
-            idRemap.put(number, ++currentId);
+            currentId++;
+            idRemap.put(number, currentId);
         }
         return idRemap.get(number);
     }

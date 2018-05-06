@@ -2,7 +2,6 @@ package main.java.social_network;
 
 import main.java.dataset.DatasetMain;
 import main.java.dataset.intervals.CallIntervals;
-import main.java.dataset.intervals.IntervalHelper;
 import main.java.dataset.util.CallRecord;
 
 import java.util.List;
@@ -24,12 +23,6 @@ public class SocialNetworkMain {
         records.sort((r1, r2) -> {
             return r1.getCallTime().compareTo(r2.getCallTime());
         });
-        double all = 0.0;
-        for (CallRecord record : records) {
-            System.out.println(record.toString()+CallIntervals.SEP+CallIntervals.getIntervalsString(record));
-        }
-        System.out.println(all);
-        System.out.println(records.size());
     }
 
 }
