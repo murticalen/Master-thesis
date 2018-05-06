@@ -1,6 +1,7 @@
 package main.java.dataset;
 
 import main.java.dataset.intervals.CallIntervals;
+import main.java.dataset.intervals.IntervalHelper;
 import main.java.dataset.intervals.UserIntervalExtractor;
 import main.java.dataset.util.*;
 
@@ -32,6 +33,7 @@ public class DatasetMain {
         //preprocessor.preProcessDataset(OUTPUT_FILE, USER_SPLITTED_OUTPUT);
 
         UserIntervalExtractor extractor = new UserIntervalExtractor();
+        IntervalHelper.ignoredDates.add("17-01-01");
         extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
 
         Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);

@@ -3,16 +3,26 @@ package main.java.dataset.intervals;
 import main.java.dataset.util.CallRecord;
 import main.java.dataset.util.Tuple;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public final class IntervalHelper {
 
     private static final Calendar calendar = Calendar.getInstance();
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yy-MM-dd");
+    public static final Set<String> ignoredDates = new HashSet<>();
+    public static final Set<String> onlyValidDates = new HashSet<>();
 
     public static Map<Integer, Map<String, Double>> extractIntervals(CallRecord record) {
         Map<Integer, Map<String, Double>> result = new HashMap<>();
-        double timePoint = IntervalHelper.calculateTimePoint(record.getCallTime());
+        double timePoint;
+        try {
+            timePoint = IntervalHelper.calculateTimePoint(record);
+        } catch (IllegalArgumentException e) {
+            return result;
+        }
         int currentDay = record.getWeekDay();
         int previousDay = calculatePreviousDay(currentDay);
         int nextDay = calculateNextDay(currentDay);
@@ -46,19 +56,31 @@ public final class IntervalHelper {
         return day != 7 ? day + 1 : 1;
     }
 
-    public static double calculateTimePoint(Date timestamp) {
+    public static double calculateTimePoint(Date timestamp)
+    {
         calendar.setTime(timestamp);
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
         double minutes = calendar.get(Calendar.MINUTE);
         double seconds = calendar.get(Calendar.SECOND);
+
         return hours + minutes / 60 + seconds / 3600;
     }
 
-    public static double calculateTimePoint(String timestamp) {
+    private static double calculateTimePoint(CallRecord record) {
         try {
-            return calculateTimePoint(CallRecord.TIMESTAMP_FORMATTER.parse(timestamp));
+            Date timestamp = CallRecord.TIMESTAMP_FORMATTER.parse(record.getCallTime());
+            //store how many days of this type there was
+            String date = DATE_FORMAT.format(timestamp);
+            if (!onlyValidDates.isEmpty() && !onlyValidDates.contains(date)) {
+                throw new IllegalArgumentException();
+            }
+            if (ignoredDates.contains(date)) {
+                throw new IllegalArgumentException();
+            }
+            CallIntervals.weekDayDateMap.get(record.getWeekDay()).add(date);
+            return calculateTimePoint(timestamp);
         } catch (ParseException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalStateException(ex);
         }
     }
 
@@ -92,19 +114,6 @@ public final class IntervalHelper {
     // return cdf(z, mu, sigma) = Gaussian cdf with mean mu and stddev sigma
     public static double cdf(double z, double mu, double sigma) {
         return cdf((z - mu) / sigma);
-    }
-
-    // Compute z such that cdf(z) = y via bisection search
-    public static double inverseCDF(double y) {
-        return inverseCDF(y, 0.00000001, -8, 8);
-    }
-
-    // bisection search
-    private static double inverseCDF(double y, double delta, double lo, double hi) {
-        double mid = lo + (hi - lo) / 2;
-        if (hi - lo < delta) return mid;
-        if (cdf(mid) > y) return inverseCDF(y, delta, lo, mid);
-        else return inverseCDF(y, delta, mid, hi);
     }
 
 }
