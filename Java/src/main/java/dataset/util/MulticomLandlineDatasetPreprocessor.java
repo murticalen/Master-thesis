@@ -29,7 +29,7 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
         //merge 5 files into 1 large file
         for (int i = 1; i <= 5; i++) {
             System.out.println(i);
-            this.readInputAndDoStuff(inputPath + "/pozivi0" + i + ".dsv", line -> {
+            readInputAndDoStuff(inputPath + "/pozivi0" + i + ".dsv", line -> {
                 CallRecord record = parseLine(line);
                 writeln(writer, record.toString());
             });

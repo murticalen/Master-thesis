@@ -29,7 +29,7 @@ public class NetworkExtractor extends AbstractReader {
 
     public Map<CallSocialInfo, Integer> getSocialNetworkInfo(String inputPath, String outputPath) throws Exception {
         Map<CallSocialInfo, Integer> socialInfoCountMap = new HashMap<>(expectedCallsCount);
-        this.readInputAndDoStuff(inputPath, line -> {
+        readInputAndDoStuff(inputPath, line -> {
             CallSocialInfo info = CallRecord.extractSocialInfo(line);
             socialInfoCountMap.put(info, socialInfoCountMap.getOrDefault(info, 0) + 1);
         });
@@ -40,7 +40,7 @@ public class NetworkExtractor extends AbstractReader {
         if (outputPath != null) {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath));
             writeln(writer, CallRecord.HEADER);
-            this.readInputAndDoStuff(inputPath, line -> {
+            readInputAndDoStuff(inputPath, line -> {
                 CallSocialInfo info = CallRecord.extractSocialInfo(line);
                 if (socialInfoCountMap.containsKey(info)) {
                     writeln(writer, CallRecord.read(line).toString());
@@ -54,7 +54,7 @@ public class NetworkExtractor extends AbstractReader {
 
     public Map<Integer, Map<Integer, Integer>> getSocialNetworkInfoV2(String inputPath) throws Exception {
         Map<Integer, Map<Integer, Integer>> socialInfoCountMap = new HashMap<>(expectedCallsCount);
-        this.readInputAndDoStuff(inputPath, line -> {
+        readInputAndDoStuff(inputPath, line -> {
             CallSocialInfo info = CallRecord.extractSocialInfo(line);
             var otherMap = socialInfoCountMap.getOrDefault(info.getCallerId(), new HashMap<>());
             otherMap.put(info.getReceiverId(), otherMap.getOrDefault(info.getReceiverId(), 0) + 1);

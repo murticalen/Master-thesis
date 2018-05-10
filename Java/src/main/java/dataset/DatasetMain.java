@@ -34,6 +34,7 @@ public class DatasetMain {
 
         UserIntervalExtractor extractor = new UserIntervalExtractor();
         IntervalHelper.ignoredDates.add("17-01-01");
+        //IntervalHelper.onlyValidDates.add("");
         extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
 
         Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
