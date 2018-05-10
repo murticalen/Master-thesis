@@ -25,7 +25,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
     @Override
     public void preProcessDataset(String inputPath, String outputFile) throws Exception {
-        this.readInputAndDoStuff(inputPath, line -> {
+        readInputAndDoStuff(inputPath, line -> {
             int caller = CallRecord.extractCallerId(line);
             userCallCount.put(caller, userCallCount.getOrDefault(caller, 0) + 1);
         });
@@ -35,7 +35,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
 
 
         Map<Integer, Writer> fileWriterMap = new HashMap<>();
-        this.readInputAndDoStuff(inputPath, line -> {
+        readInputAndDoStuff(inputPath, line -> {
             int file = userOutputFileMap.get(CallRecord.extractCallerId(line));
             Writer writer;
             if (!fileWriterMap.containsKey(file)) {
