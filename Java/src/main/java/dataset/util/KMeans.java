@@ -82,10 +82,10 @@ public class KMeans {
                     }
                 }
             }
-            System.err.println(iteration+"->"+totalError);
+            //System.err.println(iteration+"->"+totalError);
             iteration++;
         }
-        System.out.println(clusterCount+";"+totalError);
+        //System.out.println(clusterCount+";"+totalError);
         this.centroids = centroids;
         this.dataCluster = dataCluster;
         this.error = totalError;
