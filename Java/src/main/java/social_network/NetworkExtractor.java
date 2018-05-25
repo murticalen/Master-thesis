@@ -56,7 +56,7 @@ public class NetworkExtractor extends AbstractReader {
         Map<Integer, Map<Integer, Integer>> socialInfoCountMap = new HashMap<>(expectedCallsCount);
         readInputAndDoStuff(inputPath, line -> {
             CallSocialInfo info = CallRecord.extractSocialInfo(line);
-            var otherMap = socialInfoCountMap.getOrDefault(info.getCallerId(), new HashMap<>());
+            Map<Integer, Integer> otherMap = socialInfoCountMap.getOrDefault(info.getCallerId(), new HashMap<>());
             otherMap.put(info.getReceiverId(), otherMap.getOrDefault(info.getReceiverId(), 0) + 1);
             socialInfoCountMap.put(info.getCallerId(), otherMap);
         });

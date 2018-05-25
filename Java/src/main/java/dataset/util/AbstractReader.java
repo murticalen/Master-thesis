@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 public abstract class AbstractReader {
 
     protected static void readInputAndDoStuff(String inputPath, LineProcessor processor) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inputPath))));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputPath)));
         //skip header
         String line = reader.readLine();
         while ((line = reader.readLine()) != null) {

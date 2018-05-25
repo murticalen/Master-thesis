@@ -11,6 +11,7 @@ public class DatasetMain {
 
     private static final String MULTICOM_LANDLINE_INPUT = "./../dataset/";
     public static final String OUTPUT_FILE = "./../dataset/combined.csv";
+    public static final String ID_REMAP_FILE = "./../dataset/id_remap.csv";
     public static final String USER_PROFILE_FILE = "./../dataset/user_profiles.csv";
     public static final String USER_SPLITTED_OUTPUT = "./../dataset/user_splitted/";
     //sample 100k calls out of 24 mil.
@@ -26,16 +27,16 @@ public class DatasetMain {
         //NOTE: this is actually a fake map-reduce done on a single computer without the Hadoop framework
         //next two pre-processors do the mapping and the latter one reducing
         //if one is to migrate this to a real map reduce, all it needs to do is parse lines to CallRecord and emit(callerId, record)
-        AbstractDatasetPreprocessor preprocessor = new MulticomLandlineDatasetPreprocessor();
-        //preprocessor.preProcessDataset(MULTICOM_LANDLINE_INPUT, OUTPUT_FILE);
+        AbstractDatasetPreprocessor preprocessor = new MulticomLandlineDatasetPreprocessor(ID_REMAP_FILE);
+        preprocessor.preProcessData(MULTICOM_LANDLINE_INPUT, OUTPUT_FILE);
 
         preprocessor = new UserCallsSplitter(MAX_CALLS_PER_FILE);
-        //preprocessor.preProcessDataset(OUTPUT_FILE, USER_SPLITTED_OUTPUT);
+        preprocessor.preProcessData(OUTPUT_FILE, USER_SPLITTED_OUTPUT);
 
         UserIntervalExtractor extractor = new UserIntervalExtractor();
         IntervalHelper.ignoredDates.add("17-01-01");
         //IntervalHelper.onlyValidDates.add("");
-        extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
+        //extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
 
         Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
         //List<CallRecord> samples = sampler.getAllRecords(OUTPUT_FILE);

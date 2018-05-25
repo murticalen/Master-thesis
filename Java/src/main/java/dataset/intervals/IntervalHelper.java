@@ -31,7 +31,7 @@ public final class IntervalHelper {
         result.put(previousDay, new LinkedHashMap<>());
         result.put(nextDay, new LinkedHashMap<>());
 
-        for (var timeIntervalEntry : CallIntervals.timeIntervalMap.entrySet()) {
+        for (Map.Entry<Tuple<Double>, String> timeIntervalEntry : CallIntervals.timeIntervalMap.entrySet()) {
             double currentDayProb = IntervalHelper.intervalProbability(timeIntervalEntry.getKey(), timePoint, 0.0);
             double previousDayProb = IntervalHelper.intervalProbability(timeIntervalEntry.getKey(), timePoint, -24.0);
             double nextDayProb = IntervalHelper.intervalProbability(timeIntervalEntry.getKey(), timePoint, 24.0);
