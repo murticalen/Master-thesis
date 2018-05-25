@@ -56,8 +56,7 @@ public final class IntervalHelper {
         return day != 7 ? day + 1 : 1;
     }
 
-    public static double calculateTimePoint(Date timestamp)
-    {
+    public static double calculateTimePoint(Date timestamp) {
         calendar.setTime(timestamp);
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
         double minutes = calendar.get(Calendar.MINUTE);
@@ -66,17 +65,20 @@ public final class IntervalHelper {
         return hours + minutes / 60 + seconds / 3600;
     }
 
+    public static double calculateTimePoint(String timestamp, DateFormat format) {
+        try {
+            Date date = format.parse(timestamp);
+            return calculateTimePoint(date);
+        } catch (ParseException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
     private static double calculateTimePoint(CallRecord record) {
         try {
             Date timestamp = CallRecord.TIMESTAMP_FORMATTER.parse(record.getCallTime());
-            //store how many days of this type there was
-            String date = DATE_FORMAT.format(timestamp);
-            if (!onlyValidDates.isEmpty() && !onlyValidDates.contains(date)) {
-                throw new IllegalArgumentException();
-            }
-            if (ignoredDates.contains(date)) {
-                throw new IllegalArgumentException();
-            }
+            //store how many days of this type there was, ignoring invalid dates
+            String date = DateFilter.extractDateWithCheck(timestamp);
             CallIntervals.weekDayDateMap.get(record.getWeekDay()).add(date);
             return calculateTimePoint(timestamp);
         } catch (ParseException ex) {

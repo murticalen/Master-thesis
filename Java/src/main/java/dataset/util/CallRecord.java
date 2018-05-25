@@ -3,7 +3,9 @@ package main.java.dataset.util;
 import main.java.social_network.CallSocialInfo;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class CallRecord {
@@ -69,6 +71,11 @@ public class CallRecord {
         String timestamp = call[4];
         int weekDay = Integer.parseInt(call[5]);
         return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
+    }
+
+    public static Date getCallTimeStamp(String line) throws ParseException
+    {
+        return CallRecord.TIMESTAMP_FORMATTER.parse(line.split(";")[4]);
     }
 
     public static int extractCallerId(String line) {

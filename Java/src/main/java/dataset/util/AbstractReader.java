@@ -2,12 +2,13 @@ package main.java.dataset.util;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class AbstractReader {
 
-    protected static void readInputAndDoStuff(String inputPath, LineProcessor processor) throws Exception {
+    protected static void readInputAndDoStuff(String inputPath, LineProcessor processor) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputPath)));
         //skip header
         String line = reader.readLine();
@@ -27,14 +28,14 @@ public abstract class AbstractReader {
     }
 
     protected interface LineProcessor {
-        void processLine(String line) throws Exception;
+        void processLine(String line) throws IOException;
     }
 
-    public List<CallRecord> getAllRecords(String inputPath) throws Exception {
+    public List<CallRecord> getAllRecords(String inputPath) throws IOException {
         return getAllRecords(inputPath, (record -> true));
     }
 
-    public List<CallRecord> getAllRecords(String inputPath, Predicate<CallRecord> filter) throws Exception {
+    public List<CallRecord> getAllRecords(String inputPath, Predicate<CallRecord> filter) throws IOException {
         List<CallRecord> recordList = new ArrayList<>();
         readInputAndDoStuff(inputPath, line -> {
             CallRecord record = CallRecord.read(line);
@@ -44,5 +45,4 @@ public abstract class AbstractReader {
         });
         return recordList;
     }
-
 }
