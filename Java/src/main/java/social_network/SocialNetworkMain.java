@@ -5,6 +5,7 @@ import main.java.dataset.intervals.CallIntervals;
 import main.java.dataset.util.CallRecord;
 
 import java.util.List;
+import java.util.Map;
 
 public class SocialNetworkMain {
 
@@ -17,7 +18,7 @@ public class SocialNetworkMain {
 
 
         NetworkExtractor networkExtractor = new NetworkExtractor(CALLS_COUNT, false, 20);
-        //var networkInfo = networkExtractor.getSocialNetworkInfo(INPUT_FILE, FILTERED_OUTPUT);
+        Map<CallSocialInfo, Integer> networkInfo = networkExtractor.getSocialNetworkInfo(INPUT_FILE, FILTERED_OUTPUT);
 
         List<CallRecord> records = networkExtractor.getAllRecords(FILTERED_OUTPUT, record -> record.getCallerId() == 1);
         records.sort((r1, r2) -> {

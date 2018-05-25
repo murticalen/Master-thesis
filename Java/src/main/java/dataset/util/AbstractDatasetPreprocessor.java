@@ -2,6 +2,7 @@ package main.java.dataset.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class AbstractDatasetPreprocessor extends AbstractReader {
@@ -11,10 +12,17 @@ public abstract class AbstractDatasetPreprocessor extends AbstractReader {
     protected Map<String, Integer> weekDays;
 
     protected AbstractDatasetPreprocessor() {
-        this.weekDays = Map.of("Mon", 1, "Tue", 2, "Wed", 3, "Thu", 4, "Fri", 5, "Sat", 6, "Sun", 7);
+        weekDays = new LinkedHashMap<>();
+        weekDays.put("Mon", 1);
+        weekDays.put("Tue", 2);
+        weekDays.put("Wed", 3);
+        weekDays.put("Thu", 4);
+        weekDays.put("Fri", 5);
+        weekDays.put("Sat", 6);
+        weekDays.put("Sun", 7);
     }
 
-    public abstract void preProcessDataset(String inputPath, String outputFile) throws Exception;
+    public abstract void preProcessData(String inputPath, String outputFile) throws Exception;
 
     protected String sanitize(String input) {
         return input.replaceAll("\"", "");

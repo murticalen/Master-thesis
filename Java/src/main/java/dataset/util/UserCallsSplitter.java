@@ -24,7 +24,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
     }
 
     @Override
-    public void preProcessDataset(String inputPath, String outputFile) throws Exception {
+    public void preProcessData(String inputPath, String outputFile) throws Exception {
         readInputAndDoStuff(inputPath, line -> {
             int caller = CallRecord.extractCallerId(line);
             userCallCount.put(caller, userCallCount.getOrDefault(caller, 0) + 1);
@@ -57,13 +57,13 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
         int i = 0;
         int actualMaxCalls = (int) (1.3 * maxCallsPerFile);
         Map<Integer, Integer> availableFiles = new HashMap<>();
-        for (var userCount : userCallCount.entrySet()) {
+        for (Map.Entry<Integer, Integer> userCount : userCallCount.entrySet()) {
             if (availableFiles.isEmpty()) {
                 availableFiles.put(i, 0);
                 i++;
             }
             int picked = i + 1;
-            for (var item : availableFiles.entrySet()) {
+            for (Map.Entry<Integer, Integer> item : availableFiles.entrySet()) {
                 if (item.getValue() + userCount.getValue() <= actualMaxCalls) {
                     picked = item.getKey();
                     break;

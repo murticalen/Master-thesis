@@ -1,9 +1,9 @@
 package main.java.dataset.util;
 
-import main.java.dataset.intervals.CallIntervals;
-
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,19 +11,21 @@ import java.util.Map;
 public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreprocessor {
 
     private Map<String, Integer> idRemap;
+    private BufferedWriter idRemapOutputWriter;
     private int currentId = 0;
 
-    public MulticomLandlineDatasetPreprocessor() {
+    public MulticomLandlineDatasetPreprocessor(String idRemapOutput) throws IOException {
         super();
         this.inputDateFormatter = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
         this.weekdayFormatter = new SimpleDateFormat("EE");
         idRemap = new HashMap<>();
+        idRemapOutputWriter = Files.newBufferedWriter(Paths.get(idRemapOutput));
     }
 
     @Override
-    public void preProcessDataset(String inputPath, String outputFile) throws Exception {
+    public void preProcessData(String inputPath, String outputFile) throws Exception {
 
-        var writer = new BufferedWriter(new FileWriter(outputFile));
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile));
         writeln(writer, CallRecord.HEADER);
 
         //merge 5 files into 1 large file
@@ -35,9 +37,10 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
             });
         }
         flushAndClose(writer);
+        flushAndClose(idRemapOutputWriter);
     }
 
-    private CallRecord parseLine(String line) {
+    private CallRecord parseLine(String line) throws IOException {
         String[] call = line.split(";");
         String id = call[1];
         //String caller = (sanitize(call[11]));
@@ -50,10 +53,11 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
         return new CallRecord(id, callerId, receiverId, duration, getTimestamp(timestamp), weekDay);
     }
 
-    private int getId(String number) {
+    private int getId(String number) throws IOException {
         if (!idRemap.containsKey(number)) {
             currentId++;
             idRemap.put(number, currentId);
+            writeln(idRemapOutputWriter, number + CallRecord.SEP + currentId);
         }
         return idRemap.get(number);
     }
