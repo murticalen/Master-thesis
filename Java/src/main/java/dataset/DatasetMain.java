@@ -6,6 +6,8 @@ import main.java.dataset.intervals.IntervalHelper;
 import main.java.dataset.intervals.UserIntervalExtractor;
 import main.java.dataset.util.*;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 public class DatasetMain {
@@ -21,7 +23,7 @@ public class DatasetMain {
     //split the dataset into files of 1M calls and make sure all calls for one user are in the same file
     private static final int MAX_CALLS_PER_FILE = 1000000;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, ParseException {
         CallIntervals.initialize();
 
 

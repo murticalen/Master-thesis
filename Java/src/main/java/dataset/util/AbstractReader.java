@@ -18,6 +18,19 @@ public abstract class AbstractReader {
         reader.close();
     }
 
+    protected static void readInputAndDoStuff(String inputPath, LineProcessor processor, boolean skipHeader) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputPath)));
+        //skip header
+        String line;
+        if (skipHeader) {
+            line = reader.readLine();
+        }
+        while ((line = reader.readLine()) != null) {
+            processor.processLine(line);
+        }
+        reader.close();
+    }
+
     protected static void writeln(Writer writer, String line) throws IOException {
         writer.write(line + System.lineSeparator());
     }

@@ -2,7 +2,9 @@ package main.java.dataset.util;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class UserCallsSplitter extends AbstractDatasetPreprocessor {
     }
 
     @Override
-    public void preProcessData(String inputPath, String outputFile) throws Exception {
+    public void preProcessData(String inputPath, String outputFile) throws IOException, ParseException {
         readInputAndDoStuff(inputPath, line -> {
             int caller = CallRecord.extractCallerId(line);
             userCallCount.put(caller, userCallCount.getOrDefault(caller, 0) + 1);

@@ -6,6 +6,7 @@ import main.java.dataset.util.KMeans;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,7 +27,7 @@ public class CallerTypesClustering {
     public static final int MIN_CLUSTER = 2;
     public static final String[] DAYS = {"Mon", "Tue-Fri", "Sat", "Sun"};
 
-    public void run() throws Exception {
+    public void run() throws IOException {
         //since this only analyses the callers, we need to remap ids (identity function for caller and receiver) to just callers
         Map<Integer, Integer> ids = new HashMap<>(USER_COUNT);
         double[][] data = new double[USER_COUNT][FEATURES_COUNT];
@@ -73,7 +74,7 @@ public class CallerTypesClustering {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         System.setOut(new PrintStream(new File("./../test_results/monday_kmeans_java.csv")));
         CallerTypesClustering clustering = new CallerTypesClustering();
         clustering.run();

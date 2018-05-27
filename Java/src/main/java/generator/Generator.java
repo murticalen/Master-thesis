@@ -1,38 +1,62 @@
 package main.java.generator;
 
+import main.java.dataset.intervals.CallIntervals;
 import main.java.dataset.util.AbstractReader;
+import main.java.dataset.util.CallRecord;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Generator extends AbstractReader {
 
     public static final String OUTPUT_FILE = "./../cdr_output/%d.csv";
+    public static final String CALLERS_LIST = "";
+    public static final String PROFILE_TYPES = "";
+    public static final String SOCIAL_NETWORK = "";
+    public static final String SEP = CallRecord.SEP;
 
+    /**
+     *
+     * @param args [0] - required parameter, total number of users
+     *             [1] - required parameter, simulation day, integer between 1 and 7
+     * @throws IOException readers exception
+     */
     public static void main(String[] args) throws IOException {
 
+        CallIntervals.initialize();
+
         String outputFile = String.format(OUTPUT_FILE, System.currentTimeMillis());
-
-        System.out.println(outputFile);
-
         BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile));
 
-        double sum = Math.random();
-        int total = 1;
-        int cmp = (int)10e6;
+        int[] userProfiles = new int[Integer.parseInt(args[0])];
+        readInputAndDoStuff(CALLERS_LIST, line -> {
+            String[] parts = line.split(SEP);
+            userProfiles[Integer.parseInt(parts[0])] = Integer.parseInt(parts[1]);
+        });
 
-        while (Math.round(sum / total * cmp) * 1.0 / cmp != 0.5) {
-            double random = Math.random();
-            sum += random;
-            total++;
-            writeln(writer, String.valueOf(random));
+        readInputAndDoStuff(PROFILE_TYPES, line -> {
+
+        });
+
+        readInputAndDoStuff(SOCIAL_NETWORK, line -> {
+
+        });
+
+        for (int hour = 0; hour < 24; hour++) {
+            for (int minute = 0; minute < 60; minute++) {
+                for (int second = 0; second < 60; second++) {
+
+                }
+            }
         }
 
-        System.out.println(total);
-
         flushAndClose(writer);
+    }
+
+    public static void writeCallEvent(BufferedWriter writer) throws IOException
+    {
+        writeln(writer, "");
     }
 
 }
