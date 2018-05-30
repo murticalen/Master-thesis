@@ -26,3 +26,5 @@ colnames(test) <- c("x", "y")
 select(test, c(x, y)) %>% kmeans(centers = 12) -> kmeans
 test$clusterR <- kmeans$cluster
 ggplot(test, aes(x = as.numeric(x), y = as.numeric(y), color=as.factor(clusterR))) + geom_point()
+
+ggplot(intervals_count, aes (x = V1, y = V2)) + geom_point()

@@ -1,8 +1,14 @@
 #read data
 print(Sys.time())
-callsData <- read.csv2(file = './../dataset/user_splitted/0.csv', stringsAsFactors = F)
+callsData <- read.csv2(file = './../dataset/combined.csv', stringsAsFactors = F)
 
-callsData %>% group_by(callerId) %>% summarise(cnt = n()) %>% arrange(desc(cnt))
+callsData %>% group_by(callerId, receiverId) %>% summarise(cnt = n()) %>% arrange(desc(cnt)) -> social_network
+
+sn <- sample_n(social_network, 1000, replace = T)
+g <- graph_from_data_frame(d = sample_n(social_network, 1000), directed = FALSE)
+
+par(mar=c(0,0,0,0))
+plot(g)
 
 print(Sys.time())
 
@@ -19,7 +25,7 @@ filter(userProfiles, dayIntervalId < 11) %>% spread(dayIntervalId, totalProbabil
 select(userProfilesForClustering, userId) -> users
 select(userProfilesForClustering, -userId) -> userProfilesForClustering
 
-kmeans(userProfilesForClustering, centers = 25, iter.max = 150) -> kmeans
+kmeans(userProfilesForClustering, centers = 50, iter.max = 500) -> kmeans
 
 # kMeansTester <- function(data, k, kMax) {
 #   if(k < kMax) {
