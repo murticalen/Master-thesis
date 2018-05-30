@@ -5,6 +5,7 @@ import main.java.dataset.util.CallRecord;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,9 +26,9 @@ public class UserIntervalExtractor extends AbstractReader {
      *
      * @param userSplitInput the folder which contains n csv files split by {@link main.java.dataset.util.UserCallsSplitter}
      * @param outputFile     file which will contain the csv result of this method
-     * @throws Exception IO or Parse exceptions
+     * @throws IOException
      */
-    public void extractAndSaveIntervals(String userSplitInput, String outputFile) throws Exception {
+    public void extractAndSaveIntervals(String userSplitInput, String outputFile) throws IOException {
         List<String> files = Files.list(Paths.get(userSplitInput)).map(Path::toString).collect(Collectors.toList());
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));

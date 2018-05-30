@@ -31,18 +31,14 @@ public class DateFilter {
         if (!onlyValidDates.isEmpty() && !onlyValidDates.contains(date)) {
             return false;
         }
-        if (ignoredDates.contains(date)) {
-            return false;
-        }
-        return true;
+        return !ignoredDates.contains(date);
     }
 
     public static boolean isValidDate(CallRecord record) {
         try {
             Date timestamp = CallRecord.TIMESTAMP_FORMATTER.parse(record.getCallTime());
             return isValidDate(timestamp);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -1,5 +1,6 @@
 package main.java.dataset.util;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.LinkedHashMap;
@@ -22,7 +23,7 @@ public abstract class AbstractDatasetPreprocessor extends AbstractReader {
         weekDays.put("Sun", 7);
     }
 
-    public abstract void preProcessData(String inputPath, String outputFile) throws Exception;
+    public abstract void preProcessData(String inputPath, String outputFile) throws IOException, ParseException;
 
     protected String sanitize(String input) {
         return input.replaceAll("\"", "");

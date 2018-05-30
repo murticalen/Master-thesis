@@ -3,9 +3,11 @@ package main.java.dataset.intervals;
 import main.java.dataset.DatasetMain;
 import main.java.dataset.util.CallRecord;
 import main.java.dataset.util.KMeans;
+import main.java.dataset.util.KMeansWriter;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,7 +28,7 @@ public class CallerTypesClustering {
     public static final int MIN_CLUSTER = 2;
     public static final String[] DAYS = {"Mon", "Tue-Fri", "Sat", "Sun"};
 
-    public void run() throws Exception {
+    public void run() throws IOException {
         //since this only analyses the callers, we need to remap ids (identity function for caller and receiver) to just callers
         Map<Integer, Integer> ids = new HashMap<>(USER_COUNT);
         double[][] data = new double[USER_COUNT][FEATURES_COUNT];
@@ -58,6 +60,7 @@ public class CallerTypesClustering {
         double[][] slicedData = new double[USER_COUNT][INTERVAL_COUNT];
 
         KMeans kMeans = new KMeans(INTERVAL_COUNT, 1000, MAX_ERROR, USER_COUNT);
+        KMeansWriter kMeansWriter = new KMeansWriter(kMeans, CallRecord.SEP);
         System.err.println("kMeans");
 
         //NOTE: this is excruciatingly long process
@@ -65,15 +68,16 @@ public class CallerTypesClustering {
             for (int user = 0; user < USER_COUNT; user++) {
                 slicedData[user] = Arrays.copyOfRange(data[user], day * INTERVAL_COUNT, INTERVAL_COUNT + day * INTERVAL_COUNT);
             }
-            for (int k = 2; k <= 50; k++) {
+            for (int k = 35; k <= 35; k++) {
                 kMeans.run(slicedData, k);
-                int[] userCluster = kMeans.getDataCluster();
-                double[][] centroids = kMeans.getCentroids();
+                kMeansWriter.writeCentroids("./../dataset/centroids"+k+".csv", featuresMax);
+                kMeansWriter.writeDataCluster("./../dataset/dataCluster"+k+".csv");
             }
+            break;
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         System.setOut(new PrintStream(new File("./../test_results/monday_kmeans_java.csv")));
         CallerTypesClustering clustering = new CallerTypesClustering();
         clustering.run();

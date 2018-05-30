@@ -9,9 +9,20 @@ import java.util.function.Predicate;
 public abstract class AbstractReader {
 
     protected static void readInputAndDoStuff(String inputPath, LineProcessor processor) throws IOException {
+        readInputAndDoStuff(inputPath, processor, true);
+    }
+
+    protected static void readInputAndDoStuffNoSkip(String inputPath, LineProcessor processor) throws IOException {
+        readInputAndDoStuff(inputPath, processor, false);
+    }
+
+    private static void readInputAndDoStuff(String inputPath, LineProcessor processor, boolean skipHeader) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputPath)));
         //skip header
-        String line = reader.readLine();
+        String line;
+        if (skipHeader) {
+            line = reader.readLine();
+        }
         while ((line = reader.readLine()) != null) {
             processor.processLine(line);
         }

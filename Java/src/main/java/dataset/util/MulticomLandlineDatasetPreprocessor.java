@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
     }
 
     @Override
-    public void preProcessData(String inputPath, String outputFile) throws Exception {
+    public void preProcessData(String inputPath, String outputFile) throws IOException, ParseException {
 
         BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile));
         writeln(writer, CallRecord.HEADER);
