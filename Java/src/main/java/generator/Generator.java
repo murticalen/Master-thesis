@@ -91,28 +91,45 @@ public class Generator extends AbstractReader {
 
         int interval = 0;
         for (Map.Entry<Tuple<Double>,String> tupleStringEntry : CallIntervals.timeIntervalMap.entrySet()) {
+
+            Set<Integer> willMakeCall = new HashSet<>();
+            for (int user = 0; user < userIntervalCallCount.length; user++) {
+                if (userIntervalCallCount[user][interval] > 0) {
+                    willMakeCall.add(user);
+                }
+            }
+
             double start = tupleStringEntry.getKey().getV1();
             double end = tupleStringEntry.getKey().getV2();
+            //TODO fix interval overlapping
             for (int hour = (int)start; hour < (int)end + 1; hour++) {
                 for (int minute = 0; minute < 60; minute++) {
                     for (int second = 0; second < 60; second++) {
-                        for (int user = 0; user < userCount; user++) {
-                            Set<Integer> freed = new HashSet<>();
-                            for (Map.Entry<Integer, Integer> busyRemaining : busyNodes.entrySet()) {
-                                if (busyRemaining.getValue() > 1) {
-                                    busyRemaining.setValue(busyRemaining.getValue() - 1);
-                                }
-                                else {
-                                    freed.add(busyRemaining.getKey());
-                                }
+
+                        //if the call stopped this second, free the user
+                        Set<Integer> freed = new HashSet<>();
+                        for (Map.Entry<Integer, Integer> busyRemaining : busyNodes.entrySet()) {
+                            if (busyRemaining.getValue() > 1) {
+                                busyRemaining.setValue(busyRemaining.getValue() - 1);
                             }
-                            for (Integer freedUser : freed) {
-                                busyNodes.remove(freedUser);
+                            else {
+                                freed.add(busyRemaining.getKey());
                             }
-                            if (userIntervalCallCount[user][interval] > 0 && !busyNodes.containsKey(user)) {
+                        }
+                        for (Integer freedUser : freed) {
+                            busyNodes.remove(freedUser);
+                        }
+
+                        Set<Integer> wontMakeCallsAnyMore = new HashSet<>();
+                        //TODO iterate only users which can make calls to make calls
+                        for (int user : willMakeCall) {
+                            if (!busyNodes.containsKey(user)) {
                                 double timeSize = (end - start) * 60 * 60;
                                 if (Math.random() < 1 / timeSize) {
                                     userIntervalCallCount[user][interval]--;
+                                    if (userIntervalCallCount[user][interval] == 0) {
+                                        wontMakeCallsAnyMore.add(user);
+                                    }
                                     int duration = groupDuration.get(userProfiles[user]).getCallDuration();
                                     busyNodes.put(user, duration);
                                     
@@ -121,7 +138,13 @@ public class Generator extends AbstractReader {
                                     for (Map.Entry<Integer,Double> userConnectedness : userConnections.get(user).entrySet()) {
                                         total += userConnectedness.getValue();
                                         if (callee >= total) {
-                                            busyNodes.put(userConnectedness.getKey(), duration);
+                                            //check if the called user is busy
+                                            if (busyNodes.containsKey(userConnectedness.getKey())) {
+                                                duration = -1;
+                                                busyNodes.put(user, 1);
+                                            } else {
+                                                busyNodes.put(userConnectedness.getKey(), duration);
+                                            }
                                             writeln(writer, user + SEP + userConnectedness.getKey() + SEP + duration + SEP + hour + ":" + minute + ":"+second);
                                             break;
                                         }
@@ -129,6 +152,7 @@ public class Generator extends AbstractReader {
                                 }
                             }
                         }
+                        willMakeCall.removeAll(wontMakeCallsAnyMore);
                     }
                 }
             }
@@ -141,6 +165,11 @@ public class Generator extends AbstractReader {
     private static void writeCallEvent(BufferedWriter writer) throws IOException
     {
         writeln(writer, "");
+    }
+
+    //TODO remove this, it's completely useless other than it's fast to switch between writeln and printLine
+    private void printLine(BufferedWriter writer, String string) {
+        System.out.println(string);
     }
 
     public static void main(String[] args) throws IOException {
