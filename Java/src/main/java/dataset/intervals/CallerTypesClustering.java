@@ -26,7 +26,6 @@ public class CallerTypesClustering {
     public static final double MAX_ERROR = 10;
     public static final int CLUSTER_COUNT = 30;
     public static final int MIN_CLUSTER = 2;
-    public static final String[] DAYS = {"Mon", "Tue-Fri", "Sat", "Sun"};
 
     public void run() throws IOException {
         //since this only analyses the callers, we need to remap ids (identity function for caller and receiver) to just callers
@@ -57,10 +56,15 @@ public class CallerTypesClustering {
         }
 
         reader.close();
+
+//        for (int i = 0; i < FEATURES_COUNT; i++) {
+//            System.err.println(String.format("%2d: %f", i, featuresMax[i]));
+//        }
+        
         double[][] slicedData = new double[USER_COUNT][INTERVAL_COUNT];
 
         KMeans kMeans = new KMeans(INTERVAL_COUNT, 1000, MAX_ERROR, USER_COUNT);
-        KMeansWriter kMeansWriter = new KMeansWriter(kMeans, CallRecord.SEP);
+        KMeansWriter kMeansWriter = new KMeansWriter(kMeans, CallRecord.SEP, "user");
         System.err.println("kMeans");
 
         //NOTE: this is excruciatingly long process
@@ -78,7 +82,7 @@ public class CallerTypesClustering {
     }
 
     public static void main(String[] args) throws IOException {
-        System.setOut(new PrintStream(new File("./../test_results/monday_kmeans_java.csv")));
+        //System.setOut(new PrintStream(new File("./../test_results/monday_kmeans_java.csv")));
         CallerTypesClustering clustering = new CallerTypesClustering();
         clustering.run();
 

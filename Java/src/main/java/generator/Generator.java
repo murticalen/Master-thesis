@@ -41,13 +41,13 @@ public class Generator extends AbstractReader {
         this.userCount = userCount;
 
         userProfiles = new int[userCount];
-        readInputAndDoStuffNoSkip(CALLERS_LIST, line -> {
+        readInputAndDoStuff(CALLERS_LIST, line -> {
             String[] parts = line.split(SEP);
             userProfiles[Integer.parseInt(parts[0])] = Integer.parseInt(parts[1]);
         });
 
         profileFeatures = new double[35][];//TODO unhardcode
-        readInputAndDoStuffNoSkip(PROFILE_TYPES, line -> {
+        readInputAndDoStuff(PROFILE_TYPES, line -> {
             String[] parts = line.split(SEP);
             int cluster = Integer.parseInt(parts[0]);
             profileFeatures[cluster] = new double[10];//TODO unhardcode
@@ -86,6 +86,7 @@ public class Generator extends AbstractReader {
         BufferedWriter expectedCallsWriter = Files.newBufferedWriter(Paths.get(expectedCallsFile));
 
         double[][] userIntervalCallCount = new double[userProfiles.length][10];
+        writeln(expectedCallsWriter, "user" + SEP + "interval" + SEP + "cnt");
         for (int user = 0; user < userIntervalCallCount.length; user++) {
             for (int interval = 0; interval < profileFeatures[1].length; interval++) {
                 double expectedCallCount = profileFeatures[userProfiles[user]][interval];

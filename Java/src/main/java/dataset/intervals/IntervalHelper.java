@@ -31,14 +31,14 @@ public final class IntervalHelper {
         result.put(previousDay, new LinkedHashMap<>());
         result.put(nextDay, new LinkedHashMap<>());
 
-        for (Map.Entry<Tuple<Double>, String> timeIntervalEntry : CallIntervals.timeIntervalMap.entrySet()) {
-            double currentDayProb = IntervalHelper.intervalProbability(timeIntervalEntry.getKey(), timePoint, 0.0);
-            double previousDayProb = IntervalHelper.intervalProbability(timeIntervalEntry.getKey(), timePoint, -24.0);
-            double nextDayProb = IntervalHelper.intervalProbability(timeIntervalEntry.getKey(), timePoint, 24.0);
+        for (Map.Entry<Tuple<Double>, String> intervalTimeName : CallIntervals.timeIntervalMap.entrySet()) {
+            double currentDayProb = IntervalHelper.intervalProbability(intervalTimeName.getKey(), timePoint, 0.0);
+            double previousDayProb = IntervalHelper.intervalProbability(intervalTimeName.getKey(), timePoint, -24.0);
+            double nextDayProb = IntervalHelper.intervalProbability(intervalTimeName.getKey(), timePoint, 24.0);
 
-            result.get(currentDay).put(timeIntervalEntry.getValue(), currentDayProb);
-            result.get(previousDay).put(timeIntervalEntry.getValue(), previousDayProb);
-            result.get(nextDay).put(timeIntervalEntry.getValue(), nextDayProb);
+            result.get(currentDay).put(intervalTimeName.getValue(), currentDayProb);
+            result.get(previousDay).put(intervalTimeName.getValue(), previousDayProb);
+            result.get(nextDay).put(intervalTimeName.getValue(), nextDayProb);
         }
 
         return result;
