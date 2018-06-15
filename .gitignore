@@ -12,6 +12,7 @@ ubuntu-xenial*cloudimg-console.log
 
 #dataset
 *dataset/*
+*cdr_output/*
 
 #R project files
 *.Rproj.user

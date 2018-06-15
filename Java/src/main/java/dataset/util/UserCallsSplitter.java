@@ -1,5 +1,8 @@
 package main.java.dataset.util;
 
+import main.java.dataset.model.CallRecord;
+import main.java.dataset.preprocess.AbstractPreprocessor;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +16,7 @@ import java.util.Map;
  * NOTE: the output file count needs to be smaller than the max available open files for a program (my Mac has 120 limit).
  * There is no explicit regulating of the max count, but maxCallsPerFile parameter should handle it easily.
  */
-public class UserCallsSplitter extends AbstractDatasetPreprocessor {
+public class UserCallsSplitter extends AbstractPreprocessor {
 
     private int maxCallsPerFile;
     private Map<Integer, Integer> userCallCount;

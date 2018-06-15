@@ -5,7 +5,7 @@ import main.java.dataset.intervals.CallerTypesClustering;
 import main.java.dataset.model.AbstractCallDuration;
 import main.java.dataset.model.CallDuration;
 import main.java.dataset.util.AbstractReader;
-import main.java.dataset.util.CallRecord;
+import main.java.dataset.model.CallRecord;
 import main.java.dataset.util.Tuple;
 import main.java.social_network.SocialNetworkExtractor;
 
@@ -18,6 +18,7 @@ import java.util.*;
 public class Generator extends AbstractReader {
 
     public static final String OUTPUT_FILE = "./../cdr_output/%d.csv";
+    public static final String EXPECTED_CALLS_FILE = "./../cdr_output/%d-expectedCalls.csv";
     public static final String CALLERS_LIST = "./../dataset/dataCluster"+35+".csv";
     public static final String PROFILE_TYPES = "./../dataset/centroids"+35+".csv";
     public static final String SOCIAL_NETWORK = SocialNetworkExtractor.OUTPUT_PATH;
@@ -76,16 +77,23 @@ public class Generator extends AbstractReader {
 
     public void run(int day) throws IOException {
         //TODO run it for particular day, not just Monday
-        String outputFile = String.format(OUTPUT_FILE, System.currentTimeMillis());
-        BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile));
-        
+        long currentTime = System.currentTimeMillis();
+
+        String outputFile = String.format(OUTPUT_FILE, currentTime);
+        String expectedCallsFile = String.format(EXPECTED_CALLS_FILE, System.currentTimeMillis());
+
+        BufferedWriter outputWriter = Files.newBufferedWriter(Paths.get(outputFile));
+        BufferedWriter expectedCallsWriter = Files.newBufferedWriter(Paths.get(expectedCallsFile));
+
         double[][] userIntervalCallCount = new double[userProfiles.length][10];
         for (int user = 0; user < userIntervalCallCount.length; user++) {
             for (int interval = 0; interval < profileFeatures[1].length; interval++) {
                 double expectedCallCount = profileFeatures[userProfiles[user]][interval];
                 userIntervalCallCount[user][interval] = Math.max(Math.round(random.nextGaussian() * expectedCallCount + expectedCallCount), 0);
+                writeln(expectedCallsWriter, user + SEP + interval + SEP + userIntervalCallCount[user][interval]);
             }
         }
+        flushAndClose(expectedCallsWriter);
 
         Map<Integer, Integer> busyNodes = new HashMap<>();
 
@@ -99,11 +107,15 @@ public class Generator extends AbstractReader {
                 }
             }
 
-            double start = tupleStringEntry.getKey().getV1();
-            double end = tupleStringEntry.getKey().getV2();
-            //TODO fix interval overlapping
-            for (int hour = (int)start; hour < (int)end + 1; hour++) {
-                for (int minute = 0; minute < 60; minute++) {
+            double startDecimalTime = tupleStringEntry.getKey().getV1();
+            double endDecimalTime = tupleStringEntry.getKey().getV2();
+
+            for (int hour = (int)startDecimalTime; hour < (int)endDecimalTime + 1; hour++) {
+
+                int startMinute = minutesForInterval(startDecimalTime, hour, true);
+                int endMinute = minutesForInterval(endDecimalTime, hour, false);
+                for (int minute = startMinute; minute < endMinute; minute++) {
+
                     for (int second = 0; second < 60; second++) {
 
                         //if the call stopped this second, free the user
@@ -121,10 +133,9 @@ public class Generator extends AbstractReader {
                         }
 
                         Set<Integer> wontMakeCallsAnyMore = new HashSet<>();
-                        //TODO iterate only users which can make calls to make calls
                         for (int user : willMakeCall) {
                             if (!busyNodes.containsKey(user)) {
-                                double timeSize = (end - start) * 60 * 60;
+                                double timeSize = (endDecimalTime - startDecimalTime) * 60 * 60;
                                 if (Math.random() < 1 / timeSize) {
                                     userIntervalCallCount[user][interval]--;
                                     if (userIntervalCallCount[user][interval] == 0) {
@@ -135,6 +146,7 @@ public class Generator extends AbstractReader {
                                     
                                     double callee = Math.random();
                                     double total = 0;
+                                    //TODO check, there was an NullPointerException here once and there shouldn't have been
                                     for (Map.Entry<Integer,Double> userConnectedness : userConnections.get(user).entrySet()) {
                                         total += userConnectedness.getValue();
                                         if (callee >= total) {
@@ -145,7 +157,7 @@ public class Generator extends AbstractReader {
                                             } else {
                                                 busyNodes.put(userConnectedness.getKey(), duration);
                                             }
-                                            writeln(writer, user + SEP + userConnectedness.getKey() + SEP + duration + SEP + hour + ":" + minute + ":"+second);
+                                            printLine(outputWriter, user + SEP + userConnectedness.getKey() + SEP + duration + SEP + hour + ":" + minute + ":"+second);
                                             break;
                                         }
                                     }
@@ -159,17 +171,30 @@ public class Generator extends AbstractReader {
             interval++;
         }
         
-        flushAndClose(writer);
+        flushAndClose(outputWriter);
     }
 
-    private static void writeCallEvent(BufferedWriter writer) throws IOException
-    {
-        writeln(writer, "");
+    public static int minutesFromDecimal(double decimalTime) {
+        int hours = (int)decimalTime;
+        return (int)((decimalTime - hours)*60);
+    }
+
+    public static int minutesForInterval(double decimalIntervalBorder, int currentHour, boolean start) {
+        int intervalBorderHours = (int)(decimalIntervalBorder);
+        if (currentHour == intervalBorderHours) {
+            return minutesFromDecimal(decimalIntervalBorder);
+        }
+        if (start) {
+            return 0;
+        } else {
+            return 60;
+        }
     }
 
     //TODO remove this, it's completely useless other than it's fast to switch between writeln and printLine
-    private void printLine(BufferedWriter writer, String string) {
+    private void printLine(BufferedWriter writer, String string) throws IOException {
         System.out.println(string);
+        writeln(writer, string);
     }
 
     public static void main(String[] args) throws IOException {

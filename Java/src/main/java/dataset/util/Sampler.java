@@ -1,5 +1,7 @@
 package main.java.dataset.util;
 
+import main.java.dataset.model.CallRecord;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Predicate;

@@ -1,6 +1,6 @@
 package main.java.dataset.intervals;
 
-import main.java.dataset.util.CallRecord;
+import main.java.dataset.model.CallRecord;
 import main.java.dataset.util.Tuple;
 
 import java.util.*;

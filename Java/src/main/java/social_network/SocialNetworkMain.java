@@ -2,7 +2,7 @@ package main.java.social_network;
 
 import main.java.dataset.DatasetMain;
 import main.java.dataset.intervals.CallIntervals;
-import main.java.dataset.util.CallRecord;
+import main.java.dataset.model.CallRecord;
 
 import java.io.IOException;
 import java.util.List;
