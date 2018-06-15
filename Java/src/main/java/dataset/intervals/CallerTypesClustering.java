@@ -60,7 +60,7 @@ public class CallerTypesClustering {
 //        for (int i = 0; i < FEATURES_COUNT; i++) {
 //            System.err.println(String.format("%2d: %f", i, featuresMax[i]));
 //        }
-        
+
         double[][] slicedData = new double[USER_COUNT][INTERVAL_COUNT];
 
         KMeans kMeans = new KMeans(INTERVAL_COUNT, 1000, MAX_ERROR, USER_COUNT);

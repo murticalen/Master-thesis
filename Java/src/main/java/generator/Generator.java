@@ -46,16 +46,18 @@ public class Generator extends AbstractReader {
             userProfiles[Integer.parseInt(parts[0])] = Integer.parseInt(parts[1]);
         });
 
-        profileFeatures = new double[35][];//TODO unhardcode
+        profileFeatures = new double[35][70];//TODO unhardcode
         readInputAndDoStuff(PROFILE_TYPES, line -> {
             String[] parts = line.split(SEP);
             int cluster = Integer.parseInt(parts[0]);
-            profileFeatures[cluster] = new double[10];//TODO unhardcode
-            for (int i = 1; i < parts.length; i++) {
-                profileFeatures[cluster][i-1] = Double.parseDouble(parts[i]);
-                max = Double.max(profileFeatures[cluster][i-1], max);
-            }
+            int feature = Integer.parseInt(parts[1]);
+            profileFeatures[cluster][feature] = Double.parseDouble(parts[2]);
+            max = Double.max(profileFeatures[cluster][feature], max);
         });
+//        for (int cluster = 0; cluster < profileFeatures.length; cluster++) {
+//            System.out.println(Arrays.toString(profileFeatures[cluster]));
+//        }
+//        System.out.println(max);
 
         groupDuration = new HashMap<>();
         //TODO implement this to read from file in format group;type;other_parameters
@@ -80,7 +82,7 @@ public class Generator extends AbstractReader {
         long currentTime = System.currentTimeMillis();
 
         String outputFile = String.format(OUTPUT_FILE, currentTime);
-        String expectedCallsFile = String.format(EXPECTED_CALLS_FILE, System.currentTimeMillis());
+        String expectedCallsFile = String.format(EXPECTED_CALLS_FILE, currentTime);
 
         BufferedWriter outputWriter = Files.newBufferedWriter(Paths.get(outputFile));
         BufferedWriter expectedCallsWriter = Files.newBufferedWriter(Paths.get(expectedCallsFile));
@@ -88,7 +90,7 @@ public class Generator extends AbstractReader {
         double[][] userIntervalCallCount = new double[userProfiles.length][10];
         writeln(expectedCallsWriter, "user" + SEP + "interval" + SEP + "cnt");
         for (int user = 0; user < userIntervalCallCount.length; user++) {
-            for (int interval = 0; interval < profileFeatures[1].length; interval++) {
+            for (int interval = 0; interval < 10; interval++) {
                 double expectedCallCount = profileFeatures[userProfiles[user]][interval];
                 userIntervalCallCount[user][interval] = Math.max(Math.round(random.nextGaussian() * expectedCallCount + expectedCallCount), 0);
                 writeln(expectedCallsWriter, user + SEP + interval + SEP + userIntervalCallCount[user][interval]);
