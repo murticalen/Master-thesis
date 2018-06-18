@@ -9,7 +9,13 @@ public class Main {
     public static void main(String[] args) {
         CallIntervals.initialize();
 
-        System.out.println(IntervalHelper.pdf(1)-IntervalHelper.cdf(0.5));
+        //HelperTest.testMinutesFromDecimal();
+        //HelperTest.testTimeThroughDay();
+
+        //IntervalHelperEvaluator.cdfTest();
+        //IntervalHelperEvaluator.cdrTest();
+
+        IntervalHelperEvaluator.callTotalTest();
     }
 
 }

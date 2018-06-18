@@ -1,0 +1,1 @@
+userProfiles <- read.csv2(file = './../dataset/user_profiles.csv', stringsAsFactors = F)

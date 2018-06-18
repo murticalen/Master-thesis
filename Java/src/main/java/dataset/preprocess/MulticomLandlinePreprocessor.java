@@ -1,4 +1,7 @@
-package main.java.dataset.util;
+package main.java.dataset.preprocess;
+
+import main.java.dataset.model.CallRecord;
+import main.java.dataset.util.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,13 +12,13 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreprocessor {
+public class MulticomLandlinePreprocessor extends AbstractPreprocessor {
 
     private Map<String, Integer> idRemap;
     private BufferedWriter idRemapOutputWriter;
     private int currentId = 0;
 
-    public MulticomLandlineDatasetPreprocessor(String idRemapOutput) throws IOException {
+    public MulticomLandlinePreprocessor(String idRemapOutput) throws IOException {
         super();
         this.inputDateFormatter = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
         this.weekdayFormatter = new SimpleDateFormat("EE");
@@ -56,9 +59,9 @@ public class MulticomLandlineDatasetPreprocessor extends AbstractDatasetPreproce
 
     private int getId(String number) throws IOException {
         if (!idRemap.containsKey(number)) {
-            currentId++;
             idRemap.put(number, currentId);
-            writeln(idRemapOutputWriter, number + CallRecord.SEP + currentId);
+            writeln(idRemapOutputWriter, number + Constants.SEPARATOR + currentId);
+            currentId++;
         }
         return idRemap.get(number);
     }

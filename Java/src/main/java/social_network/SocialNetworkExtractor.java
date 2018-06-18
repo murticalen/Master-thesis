@@ -2,7 +2,7 @@ package main.java.social_network;
 
 import main.java.dataset.DatasetMain;
 import main.java.dataset.util.AbstractReader;
-import main.java.dataset.util.CallRecord;
+import main.java.dataset.util.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class SocialNetworkExtractor extends AbstractReader {
 
-    public static final String SEP = CallRecord.SEP;
+    public static final String SEP = Constants.SEPARATOR;
     public static final String OUTPUT_PATH = "./../dataset/social_network.csv";
     private boolean directed;
     private Map<Integer, Map<Integer, Integer>> callersConnections;

@@ -1,6 +1,12 @@
 #read data
 print(Sys.time())
 callsData <- read.csv2(file = './../dataset/combined.csv', stringsAsFactors = F)
+callsData$callTime <- ymd_hms(callsData$callTime)
+callsData$day <- day(callsData$callTime)
+callsData$month <- month(callsData$callTime)
+
+group_by(callsData, weekDay, day, month) %>% summarise(cnt = n()) %>% group_by(weekDay) %>% summarise(cnt = n()) -> dateCount
+sum(dateCount$cnt)
 
 callsData %>% group_by(callerId, receiverId) %>% summarise(cnt = n()) %>% arrange(desc(cnt)) -> social_network
 

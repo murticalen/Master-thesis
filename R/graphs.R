@@ -28,3 +28,16 @@ test$clusterR <- kmeans$cluster
 ggplot(test, aes(x = as.numeric(x), y = as.numeric(y), color=as.factor(clusterR))) + geom_point()
 
 ggplot(intervals_count, aes (x = V1, y = V2)) + geom_point()
+
+#__________      PLACEHOLDER_INTENZITETI        _____________#
+intensities <- list()
+intensities$time <- seq(0, 23, by = 1)
+intensities$change <- runif(intensities$time, -1, 5)
+intensities$value <- dnorm(intensities$time, 11.5, 3) * 150 + intensities$change
+intensities$value <- ifelse(intensities$value > 0, intensities$value, 0)
+intensities <- as.data.frame(intensities)
+
+ggplot(intensities, aes (x = time, y = value)) + geom_bar(stat = 'identity') + labs(title = "Primjer intenziteta poziva",  x = "Sat u danu", y = "Očekivani broj poziva") + theme(text = element_text(size=17))
+ggsave(filename = "./plots/caller_intensities_idea.png")
+
+#__________      PLACEHOLDER_INTENZITETI        _____________#

@@ -1,4 +1,7 @@
-package main.java.dataset.util;
+package main.java.dataset.preprocess;
+
+import main.java.dataset.util.AbstractReader;
+import main.java.dataset.model.CallRecord;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -6,13 +9,13 @@ import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public abstract class AbstractDatasetPreprocessor extends AbstractReader {
+public abstract class AbstractPreprocessor extends AbstractReader {
 
     protected DateFormat inputDateFormatter;
     protected DateFormat weekdayFormatter;
     protected Map<String, Integer> weekDays;
 
-    protected AbstractDatasetPreprocessor() {
+    protected AbstractPreprocessor() {
         weekDays = new LinkedHashMap<>();
         weekDays.put("Mon", 1);
         weekDays.put("Tue", 2);

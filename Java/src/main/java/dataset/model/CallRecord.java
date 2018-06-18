@@ -1,5 +1,6 @@
-package main.java.dataset.util;
+package main.java.dataset.model;
 
+import main.java.dataset.util.Constants;
 import main.java.social_network.CallSocialInfo;
 
 import java.text.DateFormat;
@@ -17,8 +18,8 @@ public class CallRecord {
     private String callTime;
     private int weekDay;
 
-    public static final DateFormat TIMESTAMP_FORMATTER = new SimpleDateFormat("yy-MM-dd hh:mm:ss");
-    public static final String SEP = ";";
+    public static final DateFormat TIMESTAMP_FORMATTER = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+    public static final String SEP = Constants.SEPARATOR;
     public static final String HEADER = "id" + SEP + "callerId" + SEP + "receiverId" + SEP + "duration" + SEP + "callTime" + SEP + "weekDay";
 
     public CallRecord(String id, int callerId, int receiverId, int duration, String callTime, int weekDay) {

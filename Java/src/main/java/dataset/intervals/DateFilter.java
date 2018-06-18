@@ -1,6 +1,6 @@
 package main.java.dataset.intervals;
 
-import main.java.dataset.util.CallRecord;
+import main.java.dataset.model.CallRecord;
 
 import java.text.DateFormat;
 import java.text.ParseException;

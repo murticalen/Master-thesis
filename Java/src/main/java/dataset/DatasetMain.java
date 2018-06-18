@@ -2,13 +2,13 @@ package main.java.dataset;
 
 import main.java.dataset.intervals.CallIntervals;
 import main.java.dataset.intervals.DateFilter;
-import main.java.dataset.intervals.IntervalHelper;
 import main.java.dataset.intervals.UserIntervalExtractor;
+import main.java.dataset.preprocess.AbstractPreprocessor;
+import main.java.dataset.preprocess.MulticomLandlinePreprocessor;
 import main.java.dataset.util.*;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 
 public class DatasetMain {
 
@@ -30,7 +30,7 @@ public class DatasetMain {
         //NOTE: this is actually a fake map-reduce done on a single computer without the Hadoop framework
         //next two pre-processors do the mapping and the latter one reducing
         //if one is to migrate this to a real map reduce, all it needs to do is parse lines to CallRecord and emit(callerId, record)
-        AbstractDatasetPreprocessor preprocessor = new MulticomLandlineDatasetPreprocessor(ID_REMAP_FILE);
+        AbstractPreprocessor preprocessor = new MulticomLandlinePreprocessor(ID_REMAP_FILE);
         preprocessor.preProcessData(MULTICOM_LANDLINE_INPUT, OUTPUT_FILE);
 
         preprocessor = new UserCallsSplitter(MAX_CALLS_PER_FILE);
@@ -39,7 +39,7 @@ public class DatasetMain {
         UserIntervalExtractor extractor = new UserIntervalExtractor();
         DateFilter.ignoredDates.add("17-01-01");
         //DateFilter.onlyValidDates.add("");
-        //extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
+        extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE, "");
 
         Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
         //List<CallRecord> samples = sampler.getAllRecords(OUTPUT_FILE);

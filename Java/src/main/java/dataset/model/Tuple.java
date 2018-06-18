@@ -1,4 +1,4 @@
-package main.java.dataset.util;
+package main.java.dataset.model;
 
 import java.util.Objects;
 
