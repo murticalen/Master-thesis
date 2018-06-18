@@ -1,6 +1,7 @@
 package main.java.dataset.preprocess;
 
 import main.java.dataset.model.CallRecord;
+import main.java.dataset.util.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class MulticomLandlinePreprocessor extends AbstractPreprocessor {
     private int getId(String number) throws IOException {
         if (!idRemap.containsKey(number)) {
             idRemap.put(number, currentId);
-            writeln(idRemapOutputWriter, number + CallRecord.SEP + currentId);
+            writeln(idRemapOutputWriter, number + Constants.SEPARATOR + currentId);
             currentId++;
         }
         return idRemap.get(number);

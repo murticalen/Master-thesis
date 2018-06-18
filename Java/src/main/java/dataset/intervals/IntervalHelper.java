@@ -1,7 +1,7 @@
 package main.java.dataset.intervals;
 
 import main.java.dataset.model.CallRecord;
-import main.java.dataset.util.Tuple;
+import main.java.dataset.model.Tuple;
 
 import java.text.DateFormat;
 import java.text.ParseException;

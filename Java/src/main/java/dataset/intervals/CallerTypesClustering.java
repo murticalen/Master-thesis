@@ -1,14 +1,12 @@
 package main.java.dataset.intervals;
 
 import main.java.dataset.DatasetMain;
-import main.java.dataset.model.CallRecord;
+import main.java.dataset.util.Constants;
 import main.java.dataset.util.KMeans;
 import main.java.dataset.util.KMeansWriter;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -18,10 +16,8 @@ import java.util.Map;
 public class CallerTypesClustering {
 
     public static final int USER_COUNT = 1434492;
-    public static final String SEP = CallRecord.SEP;
-    public static final int DAY_COUNT = DayInterval.DAYS.length;
-    public static final int INTERVAL_COUNT = DayInterval.INTERVALS.length;
-    public static final int FEATURES_COUNT = DAY_COUNT * INTERVAL_COUNT;
+    public static final int TOTAL_USER_COUNT = 2003241;
+    public static final String SEP = Constants.SEPARATOR;
     public static final int ITERATIONS = 1000;
     public static final double MAX_ERROR = 10;
     public static final int CLUSTER_COUNT = 30;
@@ -29,9 +25,9 @@ public class CallerTypesClustering {
 
     public void run() throws IOException {
         //since this only analyses the callers, we need to remap ids (identity function for caller and receiver) to just callers
-        Map<Integer, Integer> ids = new HashMap<>(USER_COUNT);
-        double[][] data = new double[USER_COUNT][FEATURES_COUNT];
-        double[] featuresMax = new double[FEATURES_COUNT];
+        Map<Integer, Integer> ids = new HashMap<>(Constants.USER_COUNT);
+        double[][] data = new double[Constants.USER_COUNT][Constants.TOTAL_DAY_INTERVAL_COUNT];
+        double[] featuresMax = new double[Constants.TOTAL_DAY_INTERVAL_COUNT];
         BufferedReader reader = Files.newBufferedReader(Paths.get(DatasetMain.USER_PROFILE_FILE));
         String line = reader.readLine();
         int order = 0;
@@ -49,8 +45,8 @@ public class CallerTypesClustering {
             featuresMax[feature] = Math.max(featuresMax[feature], featureValue);
         }
 
-        for (int i = 0; i < USER_COUNT; i++) {
-            for (int j = 0; j < FEATURES_COUNT; j++) {
+        for (int i = 0; i < Constants.USER_COUNT; i++) {
+            for (int j = 0; j < Constants.TOTAL_DAY_INTERVAL_COUNT; j++) {
                 data[i][j] = data[i][j] / featuresMax[j];
             }
         }
@@ -61,21 +57,21 @@ public class CallerTypesClustering {
 //            System.err.println(String.format("%2d: %f", i, featuresMax[i]));
 //        }
 
-        double[][] slicedData = new double[USER_COUNT][INTERVAL_COUNT];
+        double[][] slicedData = new double[Constants.USER_COUNT][Constants.INTERVAL_COUNT];
 
-        KMeans kMeans = new KMeans(INTERVAL_COUNT, 1000, MAX_ERROR, USER_COUNT);
-        KMeansWriter kMeansWriter = new KMeansWriter(kMeans, CallRecord.SEP, "user");
+        KMeans kMeans = new KMeans(Constants.INTERVAL_COUNT, ITERATIONS, MAX_ERROR, Constants.USER_COUNT);
+        KMeansWriter kMeansWriter = new KMeansWriter(kMeans, Constants.SEPARATOR, "user");
         System.err.println("kMeans");
 
         //NOTE: this is excruciatingly long process
-        for (int day = 0; day < DAY_COUNT; day++) {
-            for (int user = 0; user < USER_COUNT; user++) {
-                slicedData[user] = Arrays.copyOfRange(data[user], day * INTERVAL_COUNT, INTERVAL_COUNT + day * INTERVAL_COUNT);
+        for (int day = 0; day < Constants.DAY_COUNT; day++) {
+            for (int user = 0; user < Constants.USER_COUNT; user++) {
+                slicedData[user] = Arrays.copyOfRange(data[user], day * Constants.INTERVAL_COUNT, Constants.INTERVAL_COUNT + day * Constants.INTERVAL_COUNT);
             }
             for (int k = 35; k <= 35; k++) {
                 kMeans.run(slicedData, k);
-                kMeansWriter.writeCentroids("./../dataset/centroids"+k+".csv", featuresMax);
-                kMeansWriter.writeDataCluster("./../dataset/dataCluster"+k+".csv");
+                kMeansWriter.writeCentroids("./../dataset/centroids" + k + ".csv", featuresMax);
+                kMeansWriter.writeDataCluster("./../dataset/dataCluster" + k + ".csv");
             }
             break;
         }

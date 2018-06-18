@@ -1,18 +1,17 @@
 package main.java.dataset.intervals;
 
-import main.java.dataset.util.AbstractReader;
 import main.java.dataset.model.CallRecord;
+import main.java.dataset.util.AbstractReader;
+import main.java.dataset.util.Constants;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserIntervalExtractor extends AbstractReader {
@@ -28,11 +27,11 @@ public class UserIntervalExtractor extends AbstractReader {
      * @param outputFile     file which will contain the csv result of this method
      * @throws IOException
      */
-    public void extractAndSaveIntervals(String userSplitInput, String outputFile) throws IOException {
+    public void extractAndSaveIntervals(String userSplitInput, String outputFile, String dateOutputFile) throws IOException {
         List<String> files = Files.list(Paths.get(userSplitInput)).map(Path::toString).collect(Collectors.toList());
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-        writeln(writer, CallIntervals.MULTI_LINE_INTERVAL_HEADER);
+        BufferedWriter userIntervalsWriter = new BufferedWriter(new FileWriter(outputFile));
+        writeln(userIntervalsWriter, CallIntervals.MULTI_LINE_INTERVAL_HEADER);
 
         for (String file : files) {
             System.out.println(file);
@@ -54,11 +53,20 @@ public class UserIntervalExtractor extends AbstractReader {
                         .collect(Collectors.toList());
 
                 Map<Integer, Map<String, Double>> totalUserIntervals = joinUserIntervals(userIntervalList);
-                writeln(writer, CallIntervals.getMultiLineIntervalsString(totalUserIntervals, entry.getKey()));
+                writeln(userIntervalsWriter, CallIntervals.getMultiLineIntervalsString(totalUserIntervals, entry.getKey()));
             }
         }
 
-        flushAndClose(writer);
+        flushAndClose(userIntervalsWriter);
+
+        Writer dateOutputWriter = Files.newBufferedWriter(Paths.get(dateOutputFile));
+        writeln(dateOutputWriter, "weekday" + Constants.SEPARATOR + "date");
+        for (Map.Entry<Integer, Set<String>> weekdayDays : CallIntervals.weekDayDateMap.entrySet()) {
+            for (String date : weekdayDays.getValue()) {
+                writeln(dateOutputWriter, weekdayDays.getKey() + Constants.SEPARATOR + date);
+            }
+        }
+        flushAndClose(dateOutputWriter);
     }
 
     /**

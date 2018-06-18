@@ -39,7 +39,7 @@ public class DatasetMain {
         UserIntervalExtractor extractor = new UserIntervalExtractor();
         DateFilter.ignoredDates.add("17-01-01");
         //DateFilter.onlyValidDates.add("");
-        extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE);
+        extractor.extractAndSaveIntervals(USER_SPLITTED_OUTPUT, USER_PROFILE_FILE, "");
 
         Sampler sampler = new Sampler(SAMPLE_SIZE, TOTAL_SIZE);
         //List<CallRecord> samples = sampler.getAllRecords(OUTPUT_FILE);

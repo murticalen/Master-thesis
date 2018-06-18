@@ -1,8 +1,8 @@
 package main.java.test;
 
 import main.java.dataset.intervals.CallIntervals;
-import main.java.dataset.util.Tuple;
-import main.java.generator.Generator;
+import main.java.dataset.model.Tuple;
+import main.java.generator.GeneratorHelper;
 
 import java.util.Map;
 
@@ -10,13 +10,13 @@ public class HelperTest {
 
     public static void testMinutesFromDecimal() {
 
-        if (0 != Generator.minutesFromDecimal(9.0)) {
+        if (0 != GeneratorHelper.minutesFromDecimal(9.0)) {
             throw new AssertionError();
         } else {
             System.err.println("Test correct");
         }
 
-        if (30 != Generator.minutesFromDecimal(9.5)) {
+        if (30 != GeneratorHelper.minutesFromDecimal(9.5)) {
             throw new AssertionError();
         } else {
             System.err.println("Test correct");
@@ -44,8 +44,8 @@ public class HelperTest {
 
             for (int hour = (int) startDecimalTime; hour < (int) endDecimalTime + 1; hour++) {
 
-                int startMinute = Generator.minutesForInterval(startDecimalTime, hour, true);
-                int endMinute = Generator.minutesForInterval(endDecimalTime, hour, false);
+                int startMinute = GeneratorHelper.intervalMinutesForCurrentHour(startDecimalTime, hour, true);
+                int endMinute = GeneratorHelper.intervalMinutesForCurrentHour(endDecimalTime, hour, false);
                 for (int minute = startMinute; minute < endMinute; minute++) {
                     if (!hourMinutePassed[hour][minute]) {
                         hourMinutePassed[hour][minute] = true;

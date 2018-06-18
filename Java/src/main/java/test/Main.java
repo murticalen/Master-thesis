@@ -12,8 +12,10 @@ public class Main {
         //HelperTest.testMinutesFromDecimal();
         //HelperTest.testTimeThroughDay();
 
-        IntervalHelperEvaluator.cdfTest();
-        IntervalHelperEvaluator.cdrTest();
+        //IntervalHelperEvaluator.cdfTest();
+        //IntervalHelperEvaluator.cdrTest();
+
+        IntervalHelperEvaluator.callTotalTest();
     }
 
 }
