@@ -4,9 +4,9 @@ import java.util.Random;
 
 public class KMeans {
 
-    private final int featuresCount;
+    private int featuresCount;
     private final int iterations;
-    private final Random rand = new Random(20);
+    private final Random rand = new Random();
     private double maxError = 0;
     private int pointCount;
 
@@ -15,15 +15,15 @@ public class KMeans {
     private double error;
     private boolean converged;
 
-    public KMeans(int featuresCount, int iterations, double maxError, int pointCount) {
-        this.featuresCount = featuresCount;
+    public KMeans(int iterations, double maxError) {
         this.iterations = iterations;
         this.maxError = maxError;
-        this.pointCount = pointCount;
     }
 
     public void run(double[][] data, int clusterCount) {
 
+        this.pointCount = data.length;
+        this.featuresCount = data[0].length;
         int[] dataCluster = new int[pointCount];
 
         //initialize centroids;

@@ -1,9 +1,7 @@
-package main.java.generator.determine_call_count;
+package main.java.generator.user_features;
 
-import main.java.dataset.intervals.CallIntervals;
-import main.java.dataset.model.CallRecord;
 import main.java.dataset.util.AbstractReader;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 import main.java.generator.GeneratorHelper;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public abstract class AbstractCallCountDeterminator extends AbstractReader {
+public abstract class AbstractUserFeatures extends AbstractReader {
 
     protected String SEP = Constants.SEPARATOR;
     private static double totalExpectedCalls;
@@ -19,7 +17,7 @@ public abstract class AbstractCallCountDeterminator extends AbstractReader {
     protected Writer expectedCallsWriter;
     protected int userCount;
 
-    public AbstractCallCountDeterminator(int userCount) {
+    public AbstractUserFeatures(int userCount) {
         this.userCount = userCount;
     }
 

@@ -1,21 +1,21 @@
 package main.java.generator;
 
+import main.java.configuration.ConfigReader;
 import main.java.dataset.DatasetMain;
 import main.java.dataset.intervals.CallIntervals;
-import main.java.dataset.intervals.CallerTypesClustering;
-import main.java.dataset.model.AbstractCallDuration;
-import main.java.dataset.model.CallDuration;
-import main.java.dataset.model.CallRecord;
-import main.java.dataset.util.AbstractReader;
 import main.java.dataset.model.Tuple;
-import main.java.dataset.util.Constants;
-import main.java.generator.determine_call_count.AbstractCallCountDeterminator;
-import main.java.generator.determine_call_count.ClusteredCallCountDeterminator;
-import main.java.generator.determine_call_count.PersonalCallCountDeterminator;
+import main.java.dataset.util.AbstractReader;
+import main.java.configuration.Constants;
+import main.java.generator.duration.AbstractCallDuration;
+import main.java.generator.duration.CallDuration;
+import main.java.generator.user_features.AbstractUserFeatures;
+import main.java.generator.user_features.ClusteredUserFeatures;
+import main.java.generator.user_features.PersonalUserFeatures;
 import main.java.social_network.SocialNetworkExtractor;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -31,14 +31,17 @@ public class Generator extends AbstractReader {
     public static final String SEP = Constants.SEPARATOR;
 
     private static Random random = new Random();
-    private AbstractCallCountDeterminator callCountDeterminator;
+    private AbstractUserFeatures callCountDeterminator;
     private double[][] fraudFeaures;
     private Map<Integer, Map<Integer, Double>> userConnections;
-    private Map<Integer, AbstractCallDuration> groupDuration;
+    private Map<Integer, AbstractCallDuration> userDurations;
     private int userCount;
     private static long generatedCalls;
+    private int year;
+    private int month;
+    private int day;
 
-    public Generator(AbstractCallCountDeterminator callCountDeterminator) {
+    public Generator(AbstractUserFeatures callCountDeterminator) {
         CallIntervals.initialize();
         this.callCountDeterminator = callCountDeterminator;
     }
@@ -55,11 +58,8 @@ public class Generator extends AbstractReader {
             fraudFeaures[cluster][feature] = Double.parseDouble(parts[2]);
         });
 
-        groupDuration = new HashMap<>();
-        //TODO implement this to read from file in format group;type;other_parameters
-        for (int i = 0; i < 35; i++) {
-            groupDuration.put(i, CallDuration.parseFromString("1;dffd", SEP));
-        }
+        userDurations = new HashMap<>();
+        readInputAndDoStuff("./../dataset/duration.csv", line -> CallDuration.parseFromString(userDurations, line, Constants.SEPARATOR));
 
         userConnections = new HashMap<>();
         readInputAndDoStuffNoSkip(SOCIAL_NETWORK, line -> {
@@ -73,10 +73,12 @@ public class Generator extends AbstractReader {
         });
     }
 
-    public void run(int day) throws IOException {
+    public void run(int year, int month, int day, int weekDay) throws IOException {
+        this.year = year < 2000 ? year : year % 2000;
+        this.month = month;
+        this.day = day;
         generatedCalls = 0;
 
-        //TODO run it for particular day, not just Monday
         long currentTime = System.currentTimeMillis();
 
         String outputFile = String.format(OUTPUT_FILE, currentTime);
@@ -84,7 +86,7 @@ public class Generator extends AbstractReader {
 
         BufferedWriter outputWriter = Files.newBufferedWriter(Paths.get(outputFile));
 
-        long[][] userIntervalCallCount = callCountDeterminator.determineUserCallCount(day - 1, expectedCallsFile);
+        long[][] userIntervalCallCount = callCountDeterminator.determineUserCallCount(weekDay - 1, expectedCallsFile);
         System.out.println("Real-life " + Math.round(callCountDeterminator.getTotalExpectedCalls()) + " calls");
         System.out.println("Expected " + callCountDeterminator.getGeneratedExpectedCalls() + " calls");
 
@@ -134,7 +136,7 @@ public class Generator extends AbstractReader {
                                     if (userIntervalCallCount[user][interval] == 0) {
                                         wontMakeCallsAnyMore.add(user);
                                     }
-                                    int duration = groupDuration.get(0).getCallDuration();
+                                    int duration = userDurations.get(0).getCallDuration();
                                     busyNodes.put(user, duration);
 
                                     double callee = Math.random();
@@ -150,7 +152,7 @@ public class Generator extends AbstractReader {
                                             } else {
                                                 busyNodes.put(userConnectedness.getKey(), duration);
                                             }
-                                            printLine(outputWriter, user + SEP + userConnectedness.getKey() + SEP + duration + SEP + hour + ":" + minute + ":" + second);
+                                            printCall(outputWriter, user, userConnectedness.getKey(), duration, hour, minute, second);
                                             generatedCalls++;
                                             called = true;
                                             break;
@@ -177,22 +179,29 @@ public class Generator extends AbstractReader {
     }
 
     //TODO remove this, it's completely useless other than it's fast to switch between writeln and printLine
-    private void printLine(BufferedWriter writer, String string) throws IOException {
+    private void printLine(Writer writer, String string) throws IOException {
         System.out.println(string);
         writeln(writer, string);
     }
 
+    private void printCall(Writer writer, int caller, int receiver, int duration, int hour, int minute, int second) throws IOException {
+        String timestamp = String.format("%02d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
+        printLine(writer, caller + SEP + receiver + SEP + duration + SEP + timestamp);
+    }
+
     public static void main(String[] args) throws IOException {
 
-        Constants.readFromFile(null);
+        ConfigReader.readConfig();
 
-        AbstractCallCountDeterminator clusteredCallCountDeterminator = new ClusteredCallCountDeterminator
+        AbstractUserFeatures clusteredUserFeatures = new ClusteredUserFeatures
                 (CALLERS_LIST, PROFILE_TYPES, Constants.USER_COUNT, 35);
-        AbstractCallCountDeterminator personalCallCountDeterminator = new PersonalCallCountDeterminator
+        AbstractUserFeatures personalUserFeatures = new PersonalUserFeatures
                 (Constants.USER_COUNT, DatasetMain.USER_PROFILE_FILE);
-        Generator generator = new Generator(personalCallCountDeterminator);
+        Generator generator = new Generator(personalUserFeatures);
         generator.init(Constants.USER_COUNT);
-        generator.run(2);
+        generator.run(2017, 1, 3, 2);
+
+        System.out.println(CallDuration.PercentileDuration.map);
     }
 
 }

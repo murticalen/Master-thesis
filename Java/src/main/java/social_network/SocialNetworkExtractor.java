@@ -2,7 +2,7 @@ package main.java.social_network;
 
 import main.java.dataset.DatasetMain;
 import main.java.dataset.util.AbstractReader;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

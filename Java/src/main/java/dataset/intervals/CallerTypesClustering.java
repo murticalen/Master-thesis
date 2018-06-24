@@ -1,7 +1,7 @@
 package main.java.dataset.intervals;
 
 import main.java.dataset.DatasetMain;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 import main.java.dataset.util.KMeans;
 import main.java.dataset.util.KMeansWriter;
 
@@ -59,7 +59,7 @@ public class CallerTypesClustering {
 
         double[][] slicedData = new double[Constants.USER_COUNT][Constants.INTERVAL_COUNT];
 
-        KMeans kMeans = new KMeans(Constants.INTERVAL_COUNT, ITERATIONS, MAX_ERROR, Constants.USER_COUNT);
+        KMeans kMeans = new KMeans(ITERATIONS, MAX_ERROR);
         KMeansWriter kMeansWriter = new KMeansWriter(kMeans, Constants.SEPARATOR, "user");
         System.err.println("kMeans");
 

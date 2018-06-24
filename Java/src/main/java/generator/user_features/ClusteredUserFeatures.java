@@ -1,11 +1,10 @@
-package main.java.generator.determine_call_count;
+package main.java.generator.user_features;
 
-import main.java.dataset.intervals.CallIntervals;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 
 import java.io.IOException;
 
-public class ClusteredCallCountDeterminator extends AbstractCallCountDeterminator {
+public class ClusteredUserFeatures extends AbstractUserFeatures {
 
     private String userProfilesFile;
     private String profileFeaturesFile;
@@ -14,7 +13,7 @@ public class ClusteredCallCountDeterminator extends AbstractCallCountDeterminato
     private int userCount;
     private int profilesCount;
 
-    public ClusteredCallCountDeterminator(String userProfilesFile, String profileFeaturesFile, int userCount, int profilesCount) {
+    public ClusteredUserFeatures(String userProfilesFile, String profileFeaturesFile, int userCount, int profilesCount) {
         super(userCount);
         this.userProfilesFile = userProfilesFile;
         this.profileFeaturesFile = profileFeaturesFile;

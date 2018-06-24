@@ -1,8 +1,7 @@
-package main.java.dataset.util;
+package main.java.configuration;
 
 import main.java.dataset.intervals.CallerTypesClustering;
-
-import java.io.IOException;
+import main.java.dataset.util.AbstractReader;
 
 public final class Constants extends AbstractReader {
 
@@ -12,6 +11,7 @@ public final class Constants extends AbstractReader {
     public static final String SEPARATOR = ";";
     public static final int[] DAYS = {1, 2, 3, 4, 5, 6, 7};
     public static final int DAY_COUNT = DAYS.length;
+    public static final String INPUT_CONFIG_LOCATION = "./input_config_picker.txt";
 
     /* ************************************************ *
      * ************** DEFAULT INTERVALS *************** *
@@ -48,21 +48,26 @@ public final class Constants extends AbstractReader {
     public static int INTERVAL_COUNT = INTERVALS.length;
     public static final int TOTAL_DAY_INTERVAL_COUNT = DAY_COUNT * INTERVAL_COUNT;
 
-    public static void readFromFile(String file) throws IOException {
+    //DURATION
+    private static final int DEFAULT_DURATION_TYPE = 1;
+    private static final int DEFAULT_DURATION_FEATURES = 9;
+    private static final int DEFAULT_MIN_DURATION = 1;
 
-        if (file == null) {
-            return;
-        }
+    private static int DURATION_FEATURES = DEFAULT_DURATION_FEATURES;
+    private static float PERCENTILE_STEP = 1.0f / (DURATION_FEATURES - 1);
+    public static int DURATION_TYPE = DEFAULT_DURATION_TYPE;
+    public static int MIN_DURATION = DEFAULT_MIN_DURATION;
 
-        readInputAndDoStuff(file, line -> {
-            String[] parts = line.split(SEPARATOR);
-            switch (parts[0]) {
-                case "user-count":
-                    USER_COUNT = Integer.parseInt(parts[1]);
-                    break;
-                case "interval-count":
-            }
-        });
+    public static int getPercentileCount() {
+        return DURATION_FEATURES;
     }
 
+    public static float getPercentileStep() {
+        return PERCENTILE_STEP;
+    }
+
+    public static void setDurationFeatures(int durationFeatures) {
+        Constants.DURATION_FEATURES = durationFeatures;
+        Constants.PERCENTILE_STEP = 1.0f / (DURATION_FEATURES - 1);
+    }
 }
