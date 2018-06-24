@@ -1,10 +1,10 @@
-package main.java.dataset.model;
+package main.java.generator.duration;
 
 import java.util.Random;
 
 public abstract class AbstractCallDuration {
 
-    protected Random random = new Random();
+    protected static Random random = new Random();
 
     public abstract int getCallDuration();
 

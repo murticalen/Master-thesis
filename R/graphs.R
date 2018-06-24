@@ -40,4 +40,24 @@ intensities <- as.data.frame(intensities)
 ggplot(intensities, aes (x = time, y = value)) + geom_bar(stat = 'identity') + labs(title = "Primjer intenziteta poziva",  x = "Sat u danu", y = "Očekivani broj poziva") + theme(text = element_text(size=17))
 ggsave(filename = "./plots/caller_intensities_idea.png")
 
-#__________      PLACEHOLDER_INTENZITETI        _____________#
+#__________      PIRMJER_TIMEPOINT_GAUSSA        _____________#
+timePointExample <- read_csv2("./../examples/gauss-0-53-23.csv")
+timePointExample <- as.data.frame(timePointExample)
+timePointExample$i <- as.numeric(timePointExample$i) / 100000
+intervalsExample$interval <- factor(intervalsExample$interval, levels = c("Poslije ponoći","Kasna noć","Rano jutro","Jutro","Prije podne","Podne","Poslije podne","Predvečerje","Večer","Kasna večer"))
+timePointExample$v <- as.numeric(timePointExample$v)
+
+timePointExample %>% filter (v > 0) %>% ggplot(aes (x = i, y = v, color = interval)) + geom_line()  + labs(title = "Primjer Gaussove funkcije za poziv u 0:53:23",  x = "Sat u danu", y = "Vrijednost funkcije pripadnosti", color = "Interval")
+ggsave(filename = "./plots/gauss-0-53-23.png")
+
+#__________      PRIMJER_INTERVALA        _____________#
+intervalsExample <- read_csv2("./../examples/intervals-0-53-23.csv")
+intervalsExample <- as.data.frame(intervalsExample)
+intervalsExample$day <- factor(intervalsExample$day, levels = c ("Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"))
+intervalsExample$interval <- factor(intervalsExample$interval, levels = c("Poslije ponoći","Kasna noć","Rano jutro","Jutro","Prije podne","Podne","Poslije podne","Predvečerje","Večer","Kasna večer"))
+intervalsExample$value <- as.numeric(intervalsExample$value)
+
+intervalsExample %>% ggplot(aes (fill = interval, y = value, x = day)) + geom_histogram(stat = 'identity')  + labs(title = "Primjer intervalne dekompozicije za poziv u 0:53:23 u ponedjeljak",  x = "Sat u danu", y = "Vrijednost funkcije pripadnosti", fill = "Interval")
+ggsave(filename = "./plots/intervals-0-53-23.png")
+
+filter(intervalsExample, value > 0)

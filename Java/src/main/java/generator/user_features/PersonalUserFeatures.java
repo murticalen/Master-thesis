@@ -1,16 +1,16 @@
-package main.java.generator.determine_call_count;
+package main.java.generator.user_features;
 
 import main.java.dataset.intervals.CallerTypesClustering;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 
 import java.io.IOException;
 
-public class PersonalCallCountDeterminator extends AbstractCallCountDeterminator {
+public class PersonalUserFeatures extends AbstractUserFeatures {
 
     private double[][] userIntensitites;
     private String userFeaturesFile;
 
-    public PersonalCallCountDeterminator(int userCount, String userFeaturesFile) {
+    public PersonalUserFeatures(int userCount, String userFeaturesFile) {
         super(userCount);
         this.userFeaturesFile = userFeaturesFile;
     }

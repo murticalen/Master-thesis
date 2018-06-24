@@ -1,14 +1,12 @@
 package main.java.generator.statistics;
 
-import main.java.dataset.model.CallRecord;
+import main.java.configuration.Constants;
 import main.java.dataset.util.AbstractReader;
-import main.java.dataset.util.Constants;
 import main.java.generator.GeneratorHelper;
+import main.java.generator.duration.CallDuration;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class CallGeneratorCount extends AbstractReader {
 
@@ -32,9 +30,17 @@ public class CallGeneratorCount extends AbstractReader {
         flushAndClose(outputWriter);
     }
 
+    public void callDurationPercentile() {
+        for (int i = 0; i < 1000000; i++) {
+            System.out.println(CallDuration.PercentileDuration.getRandomPercentilePosition());
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         CallGeneratorCount callGeneratorCount = new CallGeneratorCount();
-        callGeneratorCount.callCountExamples(50000, 1000, Files.newBufferedWriter(Paths.get(EXPECTED_CALL_COUNT_OUTPUT)));
+        //callGeneratorCount.callCountExamples(50000, 1000, Files.newBufferedWriter(Paths.get(EXPECTED_CALL_COUNT_OUTPUT)));
+        callGeneratorCount.callDurationPercentile();
+        System.out.println(CallDuration.PercentileDuration.map);
     }
 
 }

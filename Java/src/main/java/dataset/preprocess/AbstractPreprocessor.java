@@ -6,6 +6,7 @@ import main.java.dataset.model.CallRecord;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ public abstract class AbstractPreprocessor extends AbstractReader {
     protected Map<String, Integer> weekDays;
 
     protected AbstractPreprocessor() {
+        this.weekdayFormatter = new SimpleDateFormat("EE");
         weekDays = new LinkedHashMap<>();
         weekDays.put("Mon", 1);
         weekDays.put("Tue", 2);

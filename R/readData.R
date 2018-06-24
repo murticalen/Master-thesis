@@ -2,11 +2,28 @@
 print(Sys.time())
 callsData <- read.csv2(file = './../dataset/combined.csv', stringsAsFactors = F)
 callsData$callTime <- ymd_hms(callsData$callTime)
+
+callsData$hour <- hour(callsData$callTime)
+callsData$weekDay <- as.factor(callsData$weekDay)
+
 callsData$day <- day(callsData$callTime)
 callsData$month <- month(callsData$callTime)
 
-group_by(callsData, weekDay, day, month) %>% summarise(cnt = n()) %>% group_by(weekDay) %>% summarise(cnt = n()) -> dateCount
-sum(dateCount$cnt)
+####GRAF PO DANU
+callsData %>% group_by(weekDay, day, month) %>% summarise(cnt = n()) %>% group_by(weekDay) %>% summarise(weekDayCount = n()) -> weekDayCount
+callsData$linearTime <- (as.integer(callsData$weekDay) - 1)*24 + callsData$hour
+group_by(callsData, linearTime, weekDay) %>% summarise(cnt = n()) -> hourlyCalls
+inner_join(hourlyCalls, weekDayCount) -> hourlyCalls
+hourlyCalls$cnt <- hourlyCalls$cnt / hourlyCalls$weekDayCount
+hourlyCalls %>% ggplot(aes(x = linearTime, y = cnt)) + geom_bar(stat = 'identity', aes(fill = (weekDay))) + labs(title = "Ukupni broj poziva po satima",  x = "Sat u danu", y = "Broj poziva", fill = "Dan u tjednu") + theme(text = element_text(size=11), axis.text.x=element_blank())
+ggsave(filename = "./plots/daily_call_count.png")
+
+
+callsData %>% group_by(weekDay) %>% summarise(cnt = n()) -> dailyCalls
+inner_join(dailyCalls, weekDayCount) -> dailyCalls
+dailyCalls$cnt <- dailyCalls$cnt / dailyCalls$weekDayCount
+
+dailyCalls
 
 callsData %>% group_by(callerId, receiverId) %>% summarise(cnt = n()) %>% arrange(desc(cnt)) -> social_network
 

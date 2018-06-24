@@ -1,4 +1,4 @@
-package main.java.generator.determine_call_count;
+package main.java.generator.user_features;
 
 public interface IExpectedCallsGetter {
 

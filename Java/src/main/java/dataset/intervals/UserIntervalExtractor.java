@@ -2,7 +2,7 @@ package main.java.dataset.intervals;
 
 import main.java.dataset.model.CallRecord;
 import main.java.dataset.util.AbstractReader;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -48,7 +48,7 @@ public class UserIntervalExtractor extends AbstractReader {
                 List<Map<Integer, Map<String, Double>>> userIntervalList = entry.getValue()
                         .stream()
                         .map(IntervalHelper::extractIntervals)
-                        //ignore illegal days (e.g. we don't want Sunday New Year's Day to mess up regular Sunday
+                        //ignore days with no features to stores less data on disk
                         .filter(map -> !map.isEmpty())
                         .collect(Collectors.toList());
 
@@ -87,6 +87,13 @@ public class UserIntervalExtractor extends AbstractReader {
             }
 
         }
+
+        for (Map.Entry<Integer, Map<String, Double>> dayIntervalsIntensity : result.entrySet()) {
+            for (Map.Entry<String, Double> intervalIntensity : dayIntervalsIntensity.getValue().entrySet()) {
+                intervalIntensity.setValue(intervalIntensity.getValue() / 13);
+            }
+        }
+
         return result;
     }
 

@@ -1,7 +1,7 @@
 package main.java.dataset.intervals;
 
 import main.java.dataset.model.Tuple;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 
 import java.util.*;
 

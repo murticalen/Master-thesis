@@ -1,6 +1,6 @@
 package main.java.dataset.model;
 
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 import main.java.social_network.CallSocialInfo;
 
 import java.text.DateFormat;
@@ -63,8 +63,8 @@ public class CallRecord {
         return id + SEP + callerId + SEP + receiverId + SEP + duration + SEP + callTime + SEP + weekDay;
     }
 
-    public static CallRecord read(String line) {
-        String[] call = line.split(";");
+    public static CallRecord read(String formattedLine) {
+        String[] call = formattedLine.split(";");
         String id = call[0];
         int caller = Integer.parseInt(call[1]);
         int receiver = Integer.parseInt(call[2]);

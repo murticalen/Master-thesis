@@ -1,7 +1,7 @@
 package main.java.dataset.preprocess;
 
 import main.java.dataset.model.CallRecord;
-import main.java.dataset.util.Constants;
+import main.java.configuration.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,8 +20,7 @@ public class MulticomLandlinePreprocessor extends AbstractPreprocessor {
 
     public MulticomLandlinePreprocessor(String idRemapOutput) throws IOException {
         super();
-        this.inputDateFormatter = new SimpleDateFormat("dd.MM.yy hh:mm:ss");
-        this.weekdayFormatter = new SimpleDateFormat("EE");
+        this.inputDateFormatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
         idRemap = new HashMap<>();
         idRemapOutputWriter = Files.newBufferedWriter(Paths.get(idRemapOutput));
     }
