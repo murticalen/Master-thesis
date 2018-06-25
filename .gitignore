@@ -13,8 +13,11 @@ ubuntu-xenial*cloudimg-console.log
 #dataset
 *dataset/*
 *cdr_output/*
+*.csv
 
 #R project files
 *.Rproj.user
 *.Rhistory
 .Rproj.user
+*.RData
+*R/plots/*

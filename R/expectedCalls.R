@@ -19,7 +19,9 @@ generatedCalls <- read.csv2(file = './../statistics/expected_call_count.csv', st
 generatedCalls$expectedValue <- as.numeric(generatedCalls$expectedValue)
 generatedCalls$difference <- generatedCalls$generatedCalls - generatedCalls$expectedTotalCalls
 generatedCalls$percentageDifference <- (generatedCalls$difference) / generatedCalls$expectedTotalCalls * 100
-ggplot(generatedCalls, aes (x = as.factor(expectedValue), y = percentageDifference)) + geom_boxplot()
+ggplot(generatedCalls, aes (x = as.factor(expectedValue), y = percentageDifference)) + geom_boxplot() + labs(title = "Rasipanje razlike očekivanog i generiranog broja poziva",  x = "Intenzitet", y = "Razlika očekivanog i generiranog broja poziva u postocima")
+
+ggsave(filename = "./plots/expected-calls.png")
 
 group_by(generatedCalls, expectedValue) %>% summarise(totalDifference = sum(as.numeric(difference)), totalGroup = sum(as.numeric(expectedTotalCalls))) -> groupedDifference
 groupedDifference$percentageDifference <- groupedDifference$totalDifference / groupedDifference$totalGroup * 100
