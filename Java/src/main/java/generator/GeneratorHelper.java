@@ -24,11 +24,27 @@ public class GeneratorHelper {
     }
 
     public static long calculateExpectedCalls(double expectedCalls) {
-        if (expectedCalls < 5) {
-            return GeneratorHelper.uniformCallCountRandom(expectedCalls);
-        } else {
-            return GeneratorHelper.uniformCallCountRandom(expectedCalls);
+        return calculateExpectedCalls(expectedCalls, 2);
+    }
+
+    public static long calculateExpectedCalls(double expectedCalls, float factor) {
+        if (expectedCalls < 1) {
+            double part = 0.25;
+            long n = 0;
+            expectedCalls -= part;
+            while (expectedCalls > 0) {
+                if (Math.random() < part) {
+                    n++;
+                }
+                expectedCalls -= part;
+            }
+            expectedCalls += part;
+            if (Math.random() < expectedCalls) {
+                n++;
+            }
+            return n;
         }
+        return uniformCallCountRandom(expectedCalls, factor);
     }
 
     public static long uniformCallCountRandom(double expectedCalls) {
@@ -36,16 +52,15 @@ public class GeneratorHelper {
     }
 
     public static long uniformCallCountRandom(double expectedCalls, float factor) {
-        if (expectedCalls < 0.4) {
-            if (Math.random() < expectedCalls) {
-                return 1;
-            }
-        }
         return Math.round(Math.random() * factor * expectedCalls);
     }
 
     public static long gaussCallCountRandom(double expectedCalls) {
-        return Math.round(RANDOM.nextGaussian() * expectedCalls + expectedCalls);
+        long r = -1;
+        while (r < 0) {
+            r = Math.round(RANDOM.nextGaussian() * expectedCalls + expectedCalls);
+        }
+        return r;
     }
 
 }

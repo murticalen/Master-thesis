@@ -1,13 +1,13 @@
 package main.java.generator;
 
 import main.java.configuration.ConfigReader;
+import main.java.configuration.Constants;
 import main.java.dataset.DatasetMain;
 import main.java.dataset.intervals.CallIntervals;
 import main.java.dataset.model.Tuple;
 import main.java.dataset.util.AbstractReader;
-import main.java.configuration.Constants;
 import main.java.generator.duration.AbstractCallDuration;
-import main.java.generator.duration.CallDuration;
+import main.java.generator.duration.QuantileDuration;
 import main.java.generator.user_features.AbstractUserFeatures;
 import main.java.generator.user_features.ClusteredUserFeatures;
 import main.java.generator.user_features.PersonalUserFeatures;
@@ -59,7 +59,7 @@ public class Generator extends AbstractReader {
         });
 
         userDurations = new HashMap<>();
-        readInputAndDoStuff("./../dataset/duration.csv", line -> CallDuration.parseFromString(userDurations, line, Constants.SEPARATOR));
+        readInputAndDoStuff("./../dataset/duration.csv", line -> AbstractCallDuration.parseFromString(userDurations, line, Constants.SEPARATOR));
 
         userConnections = new HashMap<>();
         readInputAndDoStuffNoSkip(SOCIAL_NETWORK, line -> {
@@ -201,7 +201,7 @@ public class Generator extends AbstractReader {
         generator.init(Constants.USER_COUNT);
         generator.run(2017, 1, 3, 2);
 
-        System.out.println(CallDuration.PercentileDuration.map);
+        System.out.println(QuantileDuration.map);
     }
 
 }
