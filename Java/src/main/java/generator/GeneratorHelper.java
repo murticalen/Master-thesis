@@ -27,6 +27,22 @@ public class GeneratorHelper {
         return calculateExpectedCalls(expectedCalls, 2);
     }
 
+    public static int calculateTimeSize(double startDecimalTime, double endDecimalTime) {
+        return (int) ((endDecimalTime - startDecimalTime) * 3600);
+    }
+
+    public static boolean activateUser(int timeSize, long userIntervalCallsRemaining) {
+        return activateUser(timeSize, userIntervalCallsRemaining, 0);
+    }
+
+    public static boolean activateUser(int timeSize, long userIntervalCallsRemaining, int userWasBusyInInterval) {
+        if (timeSize < userIntervalCallsRemaining) {
+            System.out.println("e");
+            return true;
+        }
+        return Math.random() < 1.0 / timeSize * userIntervalCallsRemaining * 5;
+    }
+
     public static long calculateExpectedCalls(double expectedCalls, float factor) {
         if (expectedCalls < 1) {
             double part = 0.25;

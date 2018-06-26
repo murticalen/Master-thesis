@@ -34,6 +34,11 @@ public abstract class AbstractUserFeatures extends AbstractReader {
         return n;
     }
 
+    public static void clearExpectedCalls() {
+        totalExpectedCalls = 0;
+        generatedExpectedCalls = 0;
+    }
+
     public double getTotalExpectedCalls() {
         return totalExpectedCalls;
     }
@@ -48,21 +53,21 @@ public abstract class AbstractUserFeatures extends AbstractReader {
 
     protected long getAndWriteExpectedCallCount(int user, int interval, double expectedCalls) throws IOException {
         long n = generateCallCount(expectedCalls);
-        writeln(expectedCallsWriter, user + SEP + interval + SEP + n);
+        //writeln(expectedCallsWriter, user + SEP + interval + SEP + n);
         return n;
     }
 
     public long[][] generateExpectedCounts(String expectedCallsFile, IExpectedCallsGetter expectedCallGetter) throws IOException {
-        expectedCallsWriter = Files.newBufferedWriter(Paths.get(expectedCallsFile));
+        //expectedCallsWriter = Files.newBufferedWriter(Paths.get(expectedCallsFile));
 
         long[][] userIntervalCallCount = new long[userCount][Constants.INTERVAL_COUNT];
-        writeHeader();
+        //writeHeader();
         for (int user = 0; user < userIntervalCallCount.length; user++) {
             for (int interval = 0; interval < Constants.INTERVAL_COUNT; interval++) {
                 userIntervalCallCount[user][interval] = getAndWriteExpectedCallCount(user, interval, expectedCallGetter.getExpectedCalls(user, interval));
             }
         }
-        flushAndClose(expectedCallsWriter);
+        //flushAndClose(expectedCallsWriter);
         return userIntervalCallCount;
     }
 
