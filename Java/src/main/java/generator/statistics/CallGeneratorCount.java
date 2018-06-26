@@ -7,8 +7,6 @@ import main.java.generator.duration.QuantileDuration;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class CallGeneratorCount extends AbstractReader {
 
@@ -33,16 +31,16 @@ public class CallGeneratorCount extends AbstractReader {
     }
 
     public void callDurationPercentile() {
-        for (int i = 0; i < 1000000; i++) {
-            System.out.println(QuantileDuration.getRandomPercentilePosition());
+        for (int i = 0; i < 10000000; i++) {
+            System.out.println(QuantileDuration.getRandomQuantilePosition());
         }
     }
 
     public static void main(String[] args) throws IOException {
         CallGeneratorCount callGeneratorCount = new CallGeneratorCount();
-        callGeneratorCount.callCountExamples(50000, 1000, Files.newBufferedWriter(Paths.get(EXPECTED_CALL_COUNT_OUTPUT)));
-        //callGeneratorCount.callDurationPercentile();
-        //System.out.println(QuantileDuration.map);
+        //callGeneratorCount.callCountExamples(50000, 1000, Files.newBufferedWriter(Paths.get(EXPECTED_CALL_COUNT_OUTPUT)));
+        callGeneratorCount.callDurationPercentile();
+        System.out.println(QuantileDuration.map);
     }
 
 }

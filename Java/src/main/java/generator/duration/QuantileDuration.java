@@ -16,7 +16,7 @@ public class QuantileDuration extends AbstractCallDuration {
 
     @Override
     public int getCallDuration() {
-        return calculateDuration(percentiles.get(getRandomPercentilePosition()));
+        return calculateDuration(percentiles.get(getRandomQuantilePosition()));
     }
 
     private int calculateDuration(float percentile) {
@@ -33,11 +33,11 @@ public class QuantileDuration extends AbstractCallDuration {
         return duration;
     }
 
-    public static int getRandomPercentilePosition() {
+    public static int getRandomQuantilePosition() {
         //return random.nextInt(Constants.getPercentileCount());
         double nthPercentile;
         do {
-            nthPercentile = (random.nextGaussian() * 0.5 + 0.5);
+            nthPercentile = (random.nextGaussian() * 0.25 + 0.5);
         } while (nthPercentile < 0 || nthPercentile > 1);
         final double floatPosition = nthPercentile / Constants.getPercentileStep();
         final int roundedPosition = (int) floatPosition;

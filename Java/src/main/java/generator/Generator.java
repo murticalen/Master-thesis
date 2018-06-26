@@ -77,7 +77,10 @@ public class Generator extends AbstractReader {
         this.year = year < 2000 ? year : year % 2000;
         this.month = month;
         this.day = day;
+        AbstractUserFeatures.clearExpectedCalls();
         generatedCalls = 0;
+        long durationTotal = 0;
+        long actualCalls = 0;
 
         long currentTime = System.currentTimeMillis();
 
@@ -96,15 +99,16 @@ public class Generator extends AbstractReader {
         long problem = 0;
         for (Tuple<Double> timeInterval : CallIntervals.timeIntervalMap.keySet()) {
 
-            Set<Integer> willMakeCall = new HashSet<>();
+            Set<Integer> willMakeCallInInterval = new HashSet<>();
             for (int user = 0; user < userIntervalCallCount.length; user++) {
                 if (userIntervalCallCount[user][interval] > 0) {
-                    willMakeCall.add(user);
+                    willMakeCallInInterval.add(user);
                 }
             }
 
             double startDecimalTime = timeInterval.getV1();
             double endDecimalTime = timeInterval.getV2();
+            int timeSize = (int) ((endDecimalTime - startDecimalTime) * 3600);
 
             for (int hour = (int) startDecimalTime; hour < (int) endDecimalTime + 1; hour++) {
 
@@ -128,15 +132,14 @@ public class Generator extends AbstractReader {
                         }
 
                         Set<Integer> wontMakeCallsAnyMore = new HashSet<>();
-                        for (int user : willMakeCall) {
+                        for (int user : willMakeCallInInterval) {
                             if (!busyNodes.containsKey(user)) {
-                                double timeSize = (endDecimalTime - startDecimalTime) * 3600 / userIntervalCallCount[user][interval];
-                                if (Math.random() < 1.0 / timeSize) {
+                                if (GeneratorHelper.activateUser(timeSize, userIntervalCallCount[user][interval])) {
                                     userIntervalCallCount[user][interval]--;
                                     if (userIntervalCallCount[user][interval] == 0) {
                                         wontMakeCallsAnyMore.add(user);
                                     }
-                                    int duration = userDurations.get(0).getCallDuration();
+                                    int duration = userDurations.get(user).getCallDuration();
                                     busyNodes.put(user, duration);
 
                                     double callee = Math.random();
@@ -151,6 +154,8 @@ public class Generator extends AbstractReader {
                                                 busyNodes.put(user, 1);
                                             } else {
                                                 busyNodes.put(userConnectedness.getKey(), duration);
+                                                durationTotal += duration;
+                                                actualCalls++;
                                             }
                                             printCall(outputWriter, user, userConnectedness.getKey(), duration, hour, minute, second);
                                             generatedCalls++;
@@ -160,11 +165,14 @@ public class Generator extends AbstractReader {
                                     }
                                     if (!called) {
                                         problem++;
+                                        System.out.println(user);
+                                        System.out.println(total);
+                                        System.out.println(userConnections.get(user));
                                     }
                                 }
                             }
                         }
-                        willMakeCall.removeAll(wontMakeCallsAnyMore);
+                        willMakeCallInInterval.removeAll(wontMakeCallsAnyMore);
                     }
                 }
             }
@@ -172,15 +180,15 @@ public class Generator extends AbstractReader {
         }
 
         flushAndClose(outputWriter);
-        System.out.println("Real-life " + Math.round(callCountDeterminator.getTotalExpectedCalls()) + " calls");
-        System.out.println("Expected " + callCountDeterminator.getGeneratedExpectedCalls() + " calls");
         System.out.println("Generated " + generatedCalls + " calls");
         System.out.println("Polled without callee: " + problem);
+        System.out.println("Average duration:" + durationTotal * 1.0 / actualCalls);
+        System.out.println(actualCalls);
     }
 
     //TODO remove this, it's completely useless other than it's fast to switch between writeln and printLine
     private void printLine(Writer writer, String string) throws IOException {
-        System.out.println(string);
+        //System.out.println(string);
         writeln(writer, string);
     }
 
@@ -199,8 +207,20 @@ public class Generator extends AbstractReader {
                 (Constants.USER_COUNT, DatasetMain.USER_PROFILE_FILE);
         Generator generator = new Generator(personalUserFeatures);
         generator.init(Constants.USER_COUNT);
-        generator.run(2017, 1, 3, 2);
 
+        generator.run(2017, 1, 3, 2);
+        System.out.println(QuantileDuration.map);
+        QuantileDuration.map.clear();
+
+        generator.run(2017, 1, 3, 2);
+        System.out.println(QuantileDuration.map);
+        QuantileDuration.map.clear();
+
+        generator.run(2017, 1, 3, 2);
+        System.out.println(QuantileDuration.map);
+        QuantileDuration.map.clear();
+
+        generator.run(2017, 1, 3, 2);
         System.out.println(QuantileDuration.map);
     }
 

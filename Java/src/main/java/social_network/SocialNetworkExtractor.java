@@ -16,17 +16,14 @@ public class SocialNetworkExtractor extends AbstractReader {
     public static final String SEP = Constants.SEPARATOR;
     public static final String OUTPUT_PATH = "./../dataset/social_network.csv";
     private boolean directed;
-    private Map<Integer, Map<Integer, Integer>> callersConnections;
-    private Map<Integer, Integer> callerTotalCallsCount;
+    private Map<Integer, Map<Integer, Integer>> callersConnections = new HashMap<>();
+    private Map<Integer, Integer> callerTotalCallsCount = new HashMap<>();
 
     public SocialNetworkExtractor(boolean directed) {
         this.directed = directed;
     }
 
     public void run(String INPUT_PATH, String OUTPUT_PATH) throws IOException {
-
-        callersConnections = new HashMap<>();
-        callerTotalCallsCount = new HashMap<>();
 
         readInputAndDoStuff(INPUT_PATH, line -> {
             String[] parts = line.split(SEP);
@@ -47,10 +44,13 @@ public class SocialNetworkExtractor extends AbstractReader {
         BufferedWriter writer = Files.newBufferedWriter(Paths.get(OUTPUT_PATH));
         for (Map.Entry<Integer, Map<Integer, Integer>> callerReceiverCount : callersConnections.entrySet()) {
             int caller = callerReceiverCount.getKey();
+            if (caller == 1064785) {
+                System.out.println(callerReceiverCount.getValue().entrySet());
+            }
             for (Map.Entry<Integer, Integer> receiverCallCount : callerReceiverCount.getValue().entrySet()) {
-                writeCallData(writer, caller, receiverCallCount.getKey(), receiverCallCount.getValue());
+                writeConnectionData(writer, caller, receiverCallCount.getKey(), receiverCallCount.getValue());
                 if (!directed) {
-                    writeCallData(writer, receiverCallCount.getKey(), caller, receiverCallCount.getValue());
+                    writeConnectionData(writer, receiverCallCount.getKey(), caller, receiverCallCount.getValue());
                 }
             }
         }
@@ -64,13 +64,13 @@ public class SocialNetworkExtractor extends AbstractReader {
         callersConnections.put(caller, receiverCount);
     }
 
-    private void writeCallData(BufferedWriter writer, int caller, int receiver, int connectionCalLCount) throws IOException {
+    private void writeConnectionData(BufferedWriter writer, int caller, int receiver, int connectionCalLCount) throws IOException {
         double connection = connectionCalLCount * 1.0 / callerTotalCallsCount.get(caller);
         writeln(writer, caller + SEP + receiver + SEP + connection);
     }
 
     public static void main(String[] args) throws IOException {
-        SocialNetworkExtractor socialNetworkExtractor = new SocialNetworkExtractor(false);
+        SocialNetworkExtractor socialNetworkExtractor = new SocialNetworkExtractor(true);
         socialNetworkExtractor.run(DatasetMain.OUTPUT_FILE, OUTPUT_PATH);
     }
 

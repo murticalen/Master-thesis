@@ -1,7 +1,6 @@
 package main.java.dataset.model;
 
 import main.java.configuration.Constants;
-import main.java.social_network.CallSocialInfo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -74,18 +73,12 @@ public class CallRecord {
         return new CallRecord(id, caller, receiver, duration, timestamp, weekDay);
     }
 
-    public static Date getCallTimeStamp(String line) throws ParseException
-    {
+    public static Date getCallTimeStamp(String line) throws ParseException {
         return CallRecord.TIMESTAMP_FORMATTER.parse(line.split(";")[4]);
     }
 
     public static int extractCallerId(String line) {
         return Integer.parseInt(line.split(";")[1]);
-    }
-
-    public static CallSocialInfo extractSocialInfo(String line) {
-        String[] call = line.split(";");
-        return new CallSocialInfo(Integer.parseInt(call[1]), Integer.parseInt(call[2]));
     }
 
     @Override
