@@ -18,6 +18,8 @@ hourlyCalls$cnt <- hourlyCalls$cnt / hourlyCalls$weekDayCount
 hourlyCalls %>% ggplot(aes(x = linearTime, y = cnt)) + geom_bar(stat = 'identity', aes(fill = (weekDay))) + labs(title = "Ukupni broj poziva po satima",  x = "Sat u danu", y = "Broj poziva", fill = "Dan u tjednu") + theme(text = element_text(size=11), axis.text.x=element_blank())
 ggsave(filename = "./plots/daily_call_count.png")
 
+group_by(hourlyCalls, weekDay) %>% summarise(cnt = sum(cnt))
+
 
 callsData %>% group_by(weekDay) %>% summarise(cnt = n()) -> dailyCalls
 inner_join(dailyCalls, weekDayCount) -> dailyCalls

@@ -31,16 +31,17 @@ public class GeneratorHelper {
         return (int) ((endDecimalTime - startDecimalTime) * 3600);
     }
 
-    public static boolean activateUser(int timeSize, long userIntervalCallsRemaining) {
-        return activateUser(timeSize, userIntervalCallsRemaining, 0);
+    public static boolean activateUser(int timeSize, int remainingTimeSize, long userIntervalTotalCalls, long userIntervalCallsRemaining) {
+        return activateUser(timeSize, remainingTimeSize, userIntervalTotalCalls, userIntervalCallsRemaining, 0);
     }
 
-    public static boolean activateUser(int timeSize, long userIntervalCallsRemaining, int userWasBusyInInterval) {
-        if (timeSize < userIntervalCallsRemaining) {
-            System.out.println("e");
-            return true;
-        }
-        return Math.random() < 1.0 / timeSize * userIntervalCallsRemaining * 5;
+    public static boolean activateUser(int timeSize, int remainingTimeSize, long userIntervalTotalCalls, long userIntervalCallsRemaining, int userWasBusyInInterval) {
+//        if (timeSize < userIntervalCallsRemaining || timeSize > 1) {
+//            return true;
+//        }
+        return Math.random() * (userIntervalCallsRemaining > 20 ? userIntervalCallsRemaining / userIntervalTotalCalls : 1)
+                <
+                1.0 / (timeSize - userWasBusyInInterval + 1) * userIntervalTotalCalls;
     }
 
     public static long calculateExpectedCalls(double expectedCalls, float factor) {

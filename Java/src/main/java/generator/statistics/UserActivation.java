@@ -6,6 +6,7 @@ import main.java.dataset.model.Tuple;
 import main.java.generator.Generator;
 import main.java.generator.GeneratorHelper;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserActivation {
@@ -23,6 +24,8 @@ public class UserActivation {
             }
         }
 
+        Map<Integer, Integer> calls = new HashMap<>();
+
         int interval = 0;
         long generated = 0;
         for (Map.Entry<Tuple<Double>, String> intervalTimeName : CallIntervals.timeIntervalMap.entrySet()) {
@@ -32,6 +35,8 @@ public class UserActivation {
 
             for (int user = 0; user < userIntervalCallCount.length; user++) {
 
+                long totalUserCalls = userIntervalCallCount[user][interval];
+
                 for (int hour = (int) startDecimalTime; hour < (int) endDecimalTime + 1; hour++) {
 
                     int startMinute = GeneratorHelper.intervalMinutesForCurrentHour(startDecimalTime, hour, true);
@@ -40,9 +45,10 @@ public class UserActivation {
 
                         for (int second = 0; second < 60; second++) {
                             if (userIntervalCallCount[user][interval] > 0) {
-                                if (GeneratorHelper.activateUser(timeSize, userIntervalCallCount[user][interval])) {
+                                if (GeneratorHelper.activateUser(timeSize, timeSize, totalUserCalls, userIntervalCallCount[user][interval])) {
                                     generated++;
                                     userIntervalCallCount[user][interval]--;
+                                    calls.put(user, calls.getOrDefault(user, 0) + 1);
                                 }
                             }
                         }
@@ -51,6 +57,8 @@ public class UserActivation {
             }
             interval++;
         }
+
+        System.out.println(calls);
 
         System.out.println(total);
         System.out.println(generated);

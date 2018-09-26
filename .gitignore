@@ -21,3 +21,5 @@ ubuntu-xenial*cloudimg-console.log
 .Rproj.user
 *.RData
 *R/plots/*
+
+*Literatura*

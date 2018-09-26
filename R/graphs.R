@@ -61,3 +61,13 @@ intervalsExample %>% ggplot(aes (fill = interval, y = value, x = day)) + geom_hi
 ggsave(filename = "./plots/intervals-0-53-23.png")
 
 filter(intervalsExample, value > 0)
+
+mean(callsData$duration)
+quantile(callsData$duration, c(.500))
+
+#############Drustvena mreža
+callSample <- sample_n(callsData, 10000)
+group_by(callSample, callerId, receiverId) %>% summarise(cnt = n()) %>% graph_from_data_frame() -> socNet
+V(socNet)
+par(mar=c(0,0,0,0))
+plot(socNet)
