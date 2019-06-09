@@ -65,10 +65,11 @@ public class Generator extends AbstractReader {
         
         userConnections = new HashMap<>();
         readInputAndDoStuffNoSkip(SOCIAL_NETWORK, line -> {
-            String[]             parts              = line.split(SEP);
-            int                  caller             = Integer.parseInt(parts[0]);
-            int                  receiver           = Integer.parseInt(parts[1]);
-            double               connection         = Double.parseDouble(parts[2]);
+            String[] parts      = line.split(SEP);
+            int      caller     = Integer.parseInt(parts[0]);
+            int      receiver   = Integer.parseInt(parts[1]);
+            double   connection = Double.parseDouble(parts[2]);
+            
             Map<Integer, Double> receiverConnection = userConnections.getOrDefault(caller, new HashMap<>());
             receiverConnection.put(receiver, connection);
             userConnections.put(caller, receiverConnection);
