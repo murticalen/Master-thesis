@@ -39,7 +39,7 @@ public class GeneratorHelper {
 //        if (timeSize < userIntervalCallsRemaining || timeSize > 1) {
 //            return true;
 //        }
-        return Math.random() * (userIntervalCallsRemaining > 20 ? userIntervalCallsRemaining / userIntervalTotalCalls : 1)
+        return Math.random() * (userIntervalCallsRemaining > 20 ? userIntervalCallsRemaining * 1.0 / userIntervalTotalCalls : 1)
                 <
                 1.0 / (timeSize - userWasBusyInInterval + 1) * userIntervalTotalCalls;
     }
@@ -47,7 +47,7 @@ public class GeneratorHelper {
     public static long calculateExpectedCalls(double expectedCalls, float factor) {
         if (expectedCalls < 1) {
             double part = 0.25;
-            long n = 0;
+            long   n    = 0;
             expectedCalls -= part;
             while (expectedCalls > 0) {
                 if (Math.random() < part) {

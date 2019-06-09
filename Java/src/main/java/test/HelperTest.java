@@ -7,45 +7,45 @@ import main.java.generator.GeneratorHelper;
 import java.util.Map;
 
 public class HelperTest {
-
+    
     public static void testMinutesFromDecimal() {
-
+        
         if (0 != GeneratorHelper.minutesFromDecimal(9.0)) {
             throw new AssertionError();
         } else {
             System.err.println("Test correct");
         }
-
+        
         if (30 != GeneratorHelper.minutesFromDecimal(9.5)) {
             throw new AssertionError();
         } else {
             System.err.println("Test correct");
         }
-
+        
     }
-
+    
     public static void testTimeThroughDay() {
-
+        
         CallIntervals.initialize();
-
+        
         boolean[][] hourMinutePassed = new boolean[24][60];
         for (int i = 0; i < 23; i++) {
             for (int j = 0; j < 60; j++) {
                 hourMinutePassed[i][j] = false;
             }
         }
-
+        
         //hourMinutePassed[11][3] = true;
-
+        
         for (Map.Entry<Tuple<Double>, String> tupleStringEntry : CallIntervals.timeIntervalMap.entrySet()) {
-
+            
             double startDecimalTime = tupleStringEntry.getKey().getV1();
-            double endDecimalTime = tupleStringEntry.getKey().getV2();
-
-            for (int hour = (int) startDecimalTime; hour < (int) endDecimalTime + 1; hour++) {
-
+            double endDecimalTime   = tupleStringEntry.getKey().getV2();
+            
+            for (int hour = (int)startDecimalTime; hour < (int)endDecimalTime + 1; hour++) {
+                
                 int startMinute = GeneratorHelper.intervalMinutesForCurrentHour(startDecimalTime, hour, true);
-                int endMinute = GeneratorHelper.intervalMinutesForCurrentHour(endDecimalTime, hour, false);
+                int endMinute   = GeneratorHelper.intervalMinutesForCurrentHour(endDecimalTime, hour, false);
                 for (int minute = startMinute; minute < endMinute; minute++) {
                     if (!hourMinutePassed[hour][minute]) {
                         hourMinutePassed[hour][minute] = true;
@@ -55,7 +55,7 @@ public class HelperTest {
                 }
             }
         }
-
+        
         for (int hour = 0; hour < 23; hour++) {
             for (int minute = 0; minute < 60; minute++) {
                 if (!hourMinutePassed[hour][minute]) {
@@ -63,13 +63,13 @@ public class HelperTest {
                 }
             }
         }
-
+        
         System.err.println("Test correct");
     }
-
+    
     public static void main(String[] args) {
         testMinutesFromDecimal();
         testTimeThroughDay();
     }
-
+    
 }

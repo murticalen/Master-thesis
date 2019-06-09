@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class AbstractReader {
-
+    
     protected static void readInputAndDoStuff(String inputPath, LineProcessor processor) throws IOException {
         readInputAndDoStuff(inputPath, processor, true);
     }
-
+    
     protected static void readInputAndDoStuffNoSkip(String inputPath, LineProcessor processor) throws IOException {
         readInputAndDoStuff(inputPath, processor, false);
     }
-
+    
     private static void readInputAndDoStuff(String inputPath, LineProcessor processor, boolean skipHeader) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputPath)));
         //skip header
@@ -29,24 +29,24 @@ public abstract class AbstractReader {
         }
         reader.close();
     }
-
+    
     protected static void writeln(Writer writer, String line) throws IOException {
         writer.write(line + System.lineSeparator());
     }
-
+    
     protected static void flushAndClose(Writer writer) throws IOException {
         writer.flush();
         writer.close();
     }
-
+    
     protected interface LineProcessor {
         void processLine(String line) throws IOException;
     }
-
+    
     public List<CallRecord> getAllRecords(String inputPath) throws IOException {
         return getAllRecords(inputPath, (record -> true));
     }
-
+    
     public List<CallRecord> getAllRecords(String inputPath, Predicate<CallRecord> filter) throws IOException {
         List<CallRecord> recordList = new ArrayList<>();
         readInputAndDoStuff(inputPath, line -> {

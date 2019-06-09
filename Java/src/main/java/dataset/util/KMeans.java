@@ -3,55 +3,55 @@ package main.java.dataset.util;
 import java.util.Random;
 
 public class KMeans {
-
-    private int featuresCount;
-    private final int iterations;
-    private final Random rand = new Random();
-    private double maxError = 0;
-    private int pointCount;
-
+    
+    private       int    featuresCount;
+    private final int    iterations;
+    private final Random rand     = new Random();
+    private       double maxError = 0;
+    private       int    pointCount;
+    
     private double[][] centroids;
-    private int[] dataCluster;
-    private double error;
-    private boolean converged;
-
+    private int[]      dataCluster;
+    private double     error;
+    private boolean    converged;
+    
     public KMeans(int iterations, double maxError) {
         this.iterations = iterations;
         this.maxError = maxError;
     }
-
+    
     public void run(double[][] data, int clusterCount) {
-
+        
         this.pointCount = data.length;
         this.featuresCount = data[0].length;
         int[] dataCluster = new int[pointCount];
-
+        
         //initialize centroids;
-        double[][] centroids = new double[clusterCount][featuresCount];
-        int[] pointsInCluster = new int[clusterCount];
+        double[][] centroids       = new double[clusterCount][featuresCount];
+        int[]      pointsInCluster = new int[clusterCount];
         for (int i = 0; i < clusterCount; i++) {
             centroids[i] = data[rand.nextInt(pointCount)];
         }
-
+        
         //initialize clusters
         for (int point = 0; point < pointCount; point++) {
             int cluster = rand.nextInt(clusterCount);
             dataCluster[point] = cluster;
             pointsInCluster[cluster]++;
         }
-
+        
         //run k-means
-        boolean changed = true;
-        int iteration = 0;
-        double totalError = Double.MAX_VALUE;
-
+        boolean changed    = true;
+        int     iteration  = 0;
+        double  totalError = Double.MAX_VALUE;
+        
         while (iteration < iterations && changed && totalError > maxError) {
             totalError = 0;
             changed = false;
-
+            
             for (int point = 0; point < pointCount; point++) {
                 double minUserError = distance(data[point], centroids[dataCluster[point]]);
-
+                
                 for (int cluster = 0; cluster < clusterCount; cluster++) {
                     double userError = distance(data[point], centroids[cluster]);
                     if (userError < minUserError && dataCluster[point] != cluster) {
@@ -60,13 +60,13 @@ public class KMeans {
                         changed = true;
                     }
                 }
-
+                
                 totalError += minUserError;
             }
-
+            
             for (int cluster = 0; cluster < clusterCount; cluster++) {
-                int dataClusterCount = 0;
-                double[] newCentroid = new double[featuresCount];
+                int      dataClusterCount = 0;
+                double[] newCentroid      = new double[featuresCount];
                 for (int point = 0; point < pointCount; point++) {
                     if (dataCluster[point] == cluster) {
                         dataClusterCount++;
@@ -91,30 +91,30 @@ public class KMeans {
         this.error = totalError;
         this.converged = !changed;
     }
-
+    
     public double[][] getCentroids() {
         return centroids;
     }
-
+    
     public int[] getDataCluster() {
         return dataCluster;
     }
-
+    
     public double getError() {
         return error;
     }
-
+    
     public boolean hasConverged() {
         return converged;
     }
-
+    
     private double distance(double[] x, double[] y) {
         double dist = 0;
-        for(int i = 0; i < featuresCount; i++) {
-            dist += (y[i] - x[i])*(y[i] - x[i]);
+        for (int i = 0; i < featuresCount; i++) {
+            dist += (y[i] - x[i]) * (y[i] - x[i]);
         }
         return Math.sqrt(dist);
     }
-
-
+    
+    
 }

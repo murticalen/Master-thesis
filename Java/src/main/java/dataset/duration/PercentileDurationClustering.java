@@ -7,7 +7,7 @@ import java.io.IOException;
 public class PercentileDurationClustering extends AbstractReader {
     
     public static final String INPUT_PATH = "";
-
+    
     public static void main(String[] args) throws IOException {
 //        KMeans kMeans = new KMeans(1000, 0.1);
 //

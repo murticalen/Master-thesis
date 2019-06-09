@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Random;
 
 public abstract class AbstractCallDuration {
-
+    
     protected static Random random = new Random();
-
+    
     public abstract int getCallDuration();
-
+    
     public static void parseFromString(Map<Integer, AbstractCallDuration> userDurations, String line, String separator) {
         String[] parts = line.split(separator);
         switch (Constants.DURATION_TYPE) {
@@ -25,5 +25,5 @@ public abstract class AbstractCallDuration {
                 break;
         }
     }
-
+    
 }

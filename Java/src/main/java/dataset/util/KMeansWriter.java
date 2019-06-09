@@ -5,31 +5,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class KMeansWriter extends AbstractReader {
-
+    
     private KMeans kMeans;
     private String separator;
     private String dataName;
-
+    
     public KMeansWriter(KMeans kMeans, String separator) {
         this(kMeans, separator, "data");
     }
-
+    
     public KMeansWriter(KMeans kMeans, String separator, String dataName) {
         this.kMeans = kMeans;
         this.separator = separator;
         this.dataName = dataName;
     }
-
+    
     public void setKMeans(KMeans kMeans) {
         this.kMeans = kMeans;
     }
-
+    
     ;
-
+    
     public void setSeparator(String separator) {
         this.separator = separator;
     }
-
+    
     public void writeDataCluster(String file) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writeln(writer, dataName + separator + "cluster");
@@ -39,7 +39,7 @@ public class KMeansWriter extends AbstractReader {
         }
         flushAndClose(writer);
     }
-
+    
     public void writeCentroids(String file, double[] featureMaxes) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writeln(writer, "cluster" + separator + "feature" + separator + "value");
@@ -56,5 +56,5 @@ public class KMeansWriter extends AbstractReader {
         }
         flushAndClose(writer);
     }
-
+    
 }

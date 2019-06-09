@@ -1,7 +1,7 @@
 package main.java.dataset.preprocess;
 
-import main.java.dataset.util.AbstractReader;
 import main.java.dataset.model.CallRecord;
+import main.java.dataset.util.AbstractReader;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -11,11 +11,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class AbstractPreprocessor extends AbstractReader {
-
-    protected DateFormat inputDateFormatter;
-    protected DateFormat weekdayFormatter;
+    
+    protected DateFormat           inputDateFormatter;
+    protected DateFormat           weekdayFormatter;
     protected Map<String, Integer> weekDays;
-
+    
     protected AbstractPreprocessor() {
         this.weekdayFormatter = new SimpleDateFormat("EE");
         weekDays = new LinkedHashMap<>();
@@ -27,13 +27,13 @@ public abstract class AbstractPreprocessor extends AbstractReader {
         weekDays.put("Sat", 6);
         weekDays.put("Sun", 7);
     }
-
+    
     public abstract void preProcessData(String inputPath, String outputFile) throws IOException, ParseException;
-
+    
     protected String sanitize(String input) {
         return input.replaceAll("\"", "");
     }
-
+    
     protected int calculateWeekday(String date) {
         try {
             return weekDays.get(this.weekdayFormatter.format(this.inputDateFormatter.parse(date)));
@@ -42,7 +42,7 @@ public abstract class AbstractPreprocessor extends AbstractReader {
             return 0;
         }
     }
-
+    
     protected String getTimestamp(String date) {
         try {
             return CallRecord.TIMESTAMP_FORMATTER.format(this.inputDateFormatter.parse(date));

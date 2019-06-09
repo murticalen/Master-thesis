@@ -17,17 +17,17 @@ import java.util.Map;
  * There is no explicit regulating of the max count, but maxCallsPerFile parameter should handle it easily.
  */
 public class UserCallsSplitter extends AbstractPreprocessor {
-
-    private int maxCallsPerFile;
+    
+    private int                   maxCallsPerFile;
     private Map<Integer, Integer> userCallCount;
     private Map<Integer, Integer> userOutputFileMap;
-
+    
     public UserCallsSplitter(int maxCallsPerFile) {
         this.maxCallsPerFile = maxCallsPerFile;
         this.userCallCount = new LinkedHashMap<>();
         this.userOutputFileMap = new HashMap<>();
     }
-
+    
     @Override
     public void preProcessData(String inputPath, String outputFile) throws IOException, ParseException {
         readInputAndDoStuff(inputPath, line -> {
@@ -37,11 +37,11 @@ public class UserCallsSplitter extends AbstractPreprocessor {
         System.out.println(1);
         determineUserFiles();
         System.out.println(2);
-
-
+        
+        
         Map<Integer, Writer> fileWriterMap = new HashMap<>();
         readInputAndDoStuff(inputPath, line -> {
-            int file = userOutputFileMap.get(CallRecord.extractCallerId(line));
+            int    file = userOutputFileMap.get(CallRecord.extractCallerId(line));
             Writer writer;
             if (!fileWriterMap.containsKey(file)) {
                 writer = new BufferedWriter(new FileWriter(outputFile + file + ".csv"));
@@ -52,15 +52,15 @@ public class UserCallsSplitter extends AbstractPreprocessor {
             }
             writeln(writer, line);
         });
-
+        
         for (Writer writer : fileWriterMap.values()) {
             flushAndClose(writer);
         }
     }
-
+    
     private void determineUserFiles() {
-        int i = 0;
-        int actualMaxCalls = (int) (1.3 * maxCallsPerFile);
+        int                   i              = 0;
+        int                   actualMaxCalls = (int)(1.3 * maxCallsPerFile);
         Map<Integer, Integer> availableFiles = new HashMap<>();
         for (Map.Entry<Integer, Integer> userCount : userCallCount.entrySet()) {
             if (availableFiles.isEmpty()) {

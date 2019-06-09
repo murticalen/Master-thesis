@@ -1,33 +1,33 @@
 package main.java.dataset.intervals;
 
-import main.java.dataset.model.Tuple;
 import main.java.configuration.Constants;
+import main.java.dataset.model.Tuple;
 
 import java.util.*;
 
 public class CallIntervals {
-
-    public static final String SEP = Constants.SEPARATOR;
-    public static String ONE_LINE_INTERVAL_HEADER;
-    public static String MULTI_LINE_INTERVAL_HEADER = "userId" + SEP + "dayIntervalId" + SEP + "totalProbability";
-    public static Map<Integer, Map<String, Integer>> dayIntervalIdMap;
-    public static Map<Tuple<Double>, String> timeIntervalMap;
-    public static final Map<Integer, Set<String>> weekDayDateMap = new TreeMap<>();
-    private static Map<String, Double> emptyMap = new HashMap<>();
-
+    
+    public static final String                             SEP                        = Constants.SEPARATOR;
+    public static       String                             ONE_LINE_INTERVAL_HEADER;
+    public static       String                             MULTI_LINE_INTERVAL_HEADER = "userId" + SEP + "dayIntervalId" + SEP + "totalProbability";
+    public static       Map<Integer, Map<String, Integer>> dayIntervalIdMap;
+    public static       Map<Tuple<Double>, String>         timeIntervalMap;
+    public static final Map<Integer, Set<String>>          weekDayDateMap             = new TreeMap<>();
+    private static      Map<String, Double>                emptyMap                   = new HashMap<>();
+    
     public static String getOneLineIntervalsString(Map<Integer, Map<String, Double>> intervals) {
         return getIntervalsString(intervals, CallIntervals.SEP, "", ((day, interval) -> ""));
     }
-
+    
     public static String getMultiLineIntervalsString(Map<Integer, Map<String, Double>> intervals, int userId) {
         return getIntervalsString(intervals, System.lineSeparator(), userId + CallIntervals.SEP, ((day, interval) -> dayIntervalIdMap.get(day).get(interval) + CallIntervals.SEP));
     }
-
+    
     private static String getIntervalsString(Map<Integer, Map<String, Double>> intervals, String separator, String prefix, PrefixCreator prefixCreator) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < Constants.DAYS.length; i++) {
             Map<String, Double> dayIntervalMap = intervals.getOrDefault(Constants.DAYS[i], emptyMap);
-
+            
             for (int j = 0; j < Constants.INTERVAL_COUNT; j++) {
                 String value = "0.0";
                 if (dayIntervalMap.containsKey(Constants.INTERVALS[j])) {
@@ -46,17 +46,17 @@ public class CallIntervals {
         }
         return sb.toString();
     }
-
+    
     private interface PrefixCreator {
         String createPrefix(int day, String interval);
     }
-
+    
     public static void initialize() {
         initializeHeader();
         initializeTimeIntervalMap();
         initializeDayIntervalIdMap();
     }
-
+    
     private static void initializeHeader() {
         StringBuilder oneLineHeader = new StringBuilder();
         for (int i = 0; i < Constants.DAYS.length; i++) {
@@ -73,10 +73,10 @@ public class CallIntervals {
         }
         ONE_LINE_INTERVAL_HEADER = oneLineHeader.toString();
     }
-
+    
     private static void initializeTimeIntervalMap() {
         Map<Tuple<Double>, String> timeIntervalMap = new LinkedHashMap<>();
-
+        
         timeIntervalMap.put(new Tuple<>(0.0, 2.0), Constants.AFTER_MIDNIGHT);
         timeIntervalMap.put(new Tuple<>(2.0, 4.0), Constants.LATE_NIGHT);
         timeIntervalMap.put(new Tuple<>(4.0, 7.0), Constants.EARLY_MORNING);
@@ -87,10 +87,10 @@ public class CallIntervals {
         timeIntervalMap.put(new Tuple<>(16.0, 19.0), Constants.PRE_EVENING);
         timeIntervalMap.put(new Tuple<>(19.0, 22.0), Constants.EVENING);
         timeIntervalMap.put(new Tuple<>(22.0, 24.0), Constants.LATE_EVENING);
-
+        
         CallIntervals.timeIntervalMap = timeIntervalMap;
     }
-
+    
     private static void initializeDayIntervalIdMap() {
         int id = 0;
         CallIntervals.dayIntervalIdMap = new HashMap<>();
